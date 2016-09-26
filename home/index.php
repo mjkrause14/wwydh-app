@@ -80,6 +80,49 @@
             .location:last-child {
                 border-bottom-width: 0px;
             }
+             #mapContainer{
+              height:500px;
+              position:relative;
+            }
+            #welcome{
+            height: 75px;
+            background-color: #418040;
+            z-index: 1;
+            opacity: 0.9;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            }
+            h1{
+            color: white;
+            font-family: "Open Sans";
+            font-size: large;
+            text-decoration: underline;
+            float: left;
+            vertical-align: middle;
+            position: relative;
+            top: 10px;
+            left: 20px;
+
+            }
+            #locationButton{
+            background-color: white;
+            color: #418040;
+            border: 2px solid #418040;
+            font-family: "Open Sans";
+            float: right;
+            font-size: 22px;
+            border-radius: 8px;
+            padding: 8px 4px;
+            position: relative;
+            top: 13px;
+            left: -30px;
+            }
+            #map{
+            height: 500px;
+            position: relative;
+            }
         </style>
     </head>
     <body>
@@ -88,7 +131,13 @@
             <div id="main_nav"></div>
             <div id="user_nav"></div>
         </div>
-        <div id="map" style="height: 500px"></div>
+        <div id="mapContainer">
+          <div id="map"></div>
+          <div id="welcome">
+            <h1>See How it Works!</h1>
+            <div id="locationButton">Submit Location</div>
+          </div>
+        </div>
         <div id="explore">
             <div id="locations">
                 <?php
