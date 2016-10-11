@@ -85,10 +85,10 @@
 					<div class="grid-item width">
 						<div class="vote">
 							<div class="upvote">
-								<i class="fa fa-caret-up" aria-hidden="true"></i>
+								<i class="fa fa-thumbs-up" aria-hidden="true"></i>
 							</div>
 							<div class="downvote">
-								<i class="fa fa-caret-down" aria-hidden="true"></i>
+								<i class="fa fa-thumbs-down" aria-hidden="true"></i>
 							</div>
 						</div>
 						<div class="idea_image" style="background-image: url(../helpers/location_images/<?php if (isset($row['image'])) echo $row['image']; else echo "no_image.jpg";?>);"></div>
