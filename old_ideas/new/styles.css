@@ -87,7 +87,7 @@ body {
 
 .pane .button {
     width: 50%;
-    padding: 9px;
+    padding: 10px;
     height: 100%;
     height: inherit;
     float: left;
@@ -96,13 +96,13 @@ body {
     border-radius: 2px 0px 0px 2px;
     position: relative;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 18px;
     box-sizing: border-box;
     text-align: center;
     transition: all 0.2s ease;
 }
 
-.pane .button[data-leader="0"] {
+.pane .button[data-leader="1"] {
     border-radius: 0px 2px 2px 0px;
 }
 

@@ -10,21 +10,14 @@ jQuery(document).ready(function($) {
             var contributions = "";
 
             $(".location-checklist .checklist-item").each(function(index, value) {
-                if ($("input", value).val().length > 0) {
-                    if (index == 0) location_requirements += $("input", value).val();
-                    else  location_requirements += "[-]" + $("input", value).val();
-                }
+                location_requirements += $("input", value).val() + "[-]";
             });
 
             $(".checklist .checklist-item").each(function(index, value) {
-                if ($("input", value).val().length > 0) {
-                    if (index == 0) contributions += $("input", value).val();
-                    else  contributions += "[-]" + $("input", value).val();
-                }
+                contributions += $("input", value).val() + "[-]";
             });
 
             var form = {
-                leader: ($(".pane .button.active").data("leader") === 1) ? true : false,
                 title: $("input[name=title]").val(),
                 description: $("textarea").val(),
                 location_requirements: location_requirements,
@@ -33,13 +26,12 @@ jQuery(document).ready(function($) {
 
             $.post("../../helpers/ideas/new.php", form, function(data) {
 
-                if (data == 1) {
-                    $(elem).parents(".pane").addClass("done").removeClass("active");
-                    $(".pane[data-index=" + -2 + "]").addClass("active");
-                } else {
-                    alert("ya done messed up A A RON!");
-                }
-            }, "text");
+                alert(data);
+                dada = $.parseJSON(data);
+
+                $(elem).parents(".pane").addClass("done").removeClass("active");
+                $(".pane[data-index=" + -2 + "]").addClass("active");
+            });
         } else {
             $(this).parents(".pane").addClass("done").removeClass("active");
             $(".pane[data-index=" + target + "]").addClass("active");
@@ -56,11 +48,11 @@ jQuery(document).ready(function($) {
     $(".pane[data-index=1] .button").click(function() {
         $(".pane[data-index=1] .button").removeClass("active");
 
-        if ($(this).data("leader") === 0) {
-            $(".pane[data-index=1] .button[data-leader=0]").addClass("active");
+        if ($(this).data("leader") === 1) {
+            $(".pane[data-index=1] .button[data-leader=1]").addClass("active");
             $(".pane[data-index=1] .login-warning").removeClass("active");
         } else {
-            $(".pane[data-index=1] .button[data-leader=1]").addClass("active");
+            $(".pane[data-index=1] .button[data-leader=0]").addClass("active");
             $(".pane[data-index=1] .login-warning").addClass("active");
         }
     });

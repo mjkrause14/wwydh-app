@@ -54,10 +54,10 @@
                     </div>
                     <div class="pane-content">
                         <div class="pane-content-intro">Who would lead this project?</div>
-                        <div class="button active" data-leader="1">
+                        <div class="button active" data-leader="0">
                             <div>Me</div>
                         </div>
-                        <div class="button" data-leader="0">
+                        <div class="button" data-leader="1">
                             <div>Not Me</div>
                         </div>
                         <div class="login-warning active">This will require an account!</div>
