@@ -194,7 +194,7 @@ body {
     content: "\f00c";
 }
 
-.pane .success-marker {
+.pane .success-marker, .pane .login-marker {
     background: #418040;
     width: 150px;
     height: 150px;
@@ -204,7 +204,17 @@ body {
     color: white;
 }
 
-.pane .success-marker i {
+.pane .login-marker {
+    background: #B0331A;
+}
+
+.pane .login-marker i {
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    height: 120px;
+}
+
+.pane .success-marker i, .pane .login-marker i {
     font-size: 100px;
     position: absolute;
     width: 100px;
@@ -214,6 +224,31 @@ body {
     right: 0;
     top: 0;
     bottom: 0;
+}
+
+.pane .login {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.pane .login input {
+    max-width: 400px;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+.pane .login input[type="submit"] {
+    background: #418040;
+    -webkit-appearance: none;
+    color: white;
+    border-radius: 2px;
+    transition: opacity 0.15s ease;
+    -webkit-font-smoothing: subpixel-antialiased;
+    cursor: pointer;
+}
+
+.pane .login input[type="submit"]:hover {
+    opacity: 0.85;
 }
 
 .pane.active {

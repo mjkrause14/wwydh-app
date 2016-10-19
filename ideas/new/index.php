@@ -1,12 +1,21 @@
 <?php
     session_start();
 
-    if (isset($_GET["location"])) $location = $_GET["location"];
-    else // header("Location: ../");
+    if (isset($_GET["location"])) {
+        require_once "../../helpers/conn.php";
+        $locationid = $_GET["location"];
+
+        $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT i.id) AS ideas, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN ideas i ON i.location_id = l.id LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id=? GROUP BY l.id");
+        $q->bind_param("s", $locationid);
+        $q->execute();
+
+        $location = $q->get_result()->fetch_array(MYSQLI_ASSOC);
+    }
 
     if (isset($_GET["idea"])) {
-        //BACKEND: handle editing an idea here, EG change title, retrieve entry completion from database and set that pane as active, populate
+        //BACKEND:40 handle editing an idea here, EG change title, retrieve entry completion from database and set that pane as active, populate
     }
+
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +120,27 @@
                         <div class="title">Preview</div>
                     </div>
                 </div>
+                <div class="pane" data-index="-1">
+                    <!-- Login Required -->
+                    <div class="pane-title">
+                        <div class="title">Login Required!</div>
+                    </div>
+                    <div class="pane-content">
+                        <div class="pane-content-intro error">
+                            You've decided to manage this idea! Please login!
+                        </div>
+                        <div class="login-marker">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </div>
+                        <div class="login">
+                            <input name="user" type="text" placeholder="username" spellcheck="false", autocorrect="off" />
+                            <input name="pass" type="password" placeholder="password" />
+                            <input name="submit" type="submit" value="Submit" />
+                        </div>
+                    </div>
+                </div>
                 <div class="pane" data-index="-2">
+                    <!-- Successful Submission -->
                     <div class="pane-title">
                         <div class="title">Idea Submitted!</div>
                     </div>

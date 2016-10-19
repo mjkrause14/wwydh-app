@@ -5,45 +5,16 @@ jQuery(document).ready(function($) {
         var target = $(this).data("target");
 
         if (target == -1) {
-            // handle form submission
-            var location_requirements = "";
-            var contributions = "";
-
-            $(".location-checklist .checklist-item").each(function(index, value) {
-                if ($("input", value).val().length > 0) {
-                    if (index == 0) location_requirements += $("input", value).val();
-                    else  location_requirements += "[-]" + $("input", value).val();
-                }
-            });
-
-            $(".checklist .checklist-item").each(function(index, value) {
-                if ($("input", value).val().length > 0) {
-                    if (index == 0) contributions += $("input", value).val();
-                    else  contributions += "[-]" + $("input", value).val();
-                }
-            });
-
-            var form = {
-                leader: ($(".pane .button.active").data("leader") === 1) ? true : false,
-                title: $("input[name=title]").val(),
-                description: $("textarea").val(),
-                location_requirements: location_requirements,
-                contributions: contributions
-            };
-
-            $.post("../../helpers/ideas/new.php", form, function(data) {
-
-                if (data == 1) {
-                    $(elem).parents(".pane").addClass("done").removeClass("active");
-                    $(".pane[data-index=" + -2 + "]").addClass("active");
-                } else {
-                    alert("ya done messed up A A RON!");
-                }
-            }, "text");
+            submitIdea(elem);
         } else {
             $(this).parents(".pane").addClass("done").removeClass("active");
             $(".pane[data-index=" + target + "]").addClass("active");
         }
+    });
+
+    $(".login input[type=submit]").click(function() {
+        var elem = $(this).parents(".pane");
+        doLogin(elem);
     });
 
     $(".retreat").click(function() {
@@ -69,6 +40,10 @@ jQuery(document).ready(function($) {
         addItem($(this));
     });
 
+    /*
+
+        Garbage code for automatically traversing the checklist panes. Fix or delete.
+
     $(".checklist").on("input", ".checklist-item input", function() {
         var check = $(this).val().match(/ x [0-9]+/gi);
 
@@ -85,9 +60,70 @@ jQuery(document).ready(function($) {
             traverse($(this));
         }
     })
+    */
+
+    function doLogin(elem) {
+        var login = {
+            username: $(".login input[name=user]").val(),
+            password: $(".login input[name=pass]").val()
+        };
+
+        $.post("../../helpers/standalone-login.php", login, function(data) {
+
+            if (data == 1) {
+                // successfully logged in
+                $(elem).addClass("done").removeClass("active");
+                $(".pane[data-index=-2]").addClass("active");
+            } else {
+                // bad login information
+                alert("Login information incorrect! Please try again!");
+            }
+        }, "text");
+    }
+
+    function submitIdea(elem) {
+        // handle form submission
+        var location_requirements = "";
+        var contributions = "";
+
+        $(".location-checklist .checklist-item").each(function(index, value) {
+            if ($("input", value).val().length > 0) {
+                if (index == 0) location_requirements += $("input", value).val();
+                else  location_requirements += "[-]" + $("input", value).val();
+            }
+        });
+
+        $(".checklist .checklist-item").each(function(index, value) {
+            if ($("input", value).val().length > 0) {
+                if (index == 0) contributions += $("input", value).val();
+                else  contributions += "[-]" + $("input", value).val();
+            }
+        });
+
+        var form = {
+            leader: ($(".pane .button.active").data("leader") === 1) ? true : false,
+            title: $("input[name=title]").val(),
+            description: $("textarea").val(),
+            location_requirements: location_requirements,
+            contributions: contributions
+        };
+
+        $.post("../../helpers/ideas/new.php", form, function(data) {
+
+            if (data == 1) {
+                // successfully inserted idea
+                $(elem).parents(".pane").addClass("done").removeClass("active");
+                $(".pane[data-index=-2]").addClass("active");
+            } else {
+                // login required
+                $(elem).parents(".pane").addClass("done").removeClass("active");
+                $(".pane[data-index=-1]").addClass("active");
+            }
+        }, "text");
+    }
 
     function addItem(elem) {
-        $(elem).parent().append('<div class="checklist-item"><input type="text" placeholder="Enter another requirement here. EG: Truck x 4" /></div>');
+        $(elem).parent().append('<div class="checklist-item"><input type="text" placeholder="Enter another requirement here." /></div>');
     }
 
     function traverse(element) {
