@@ -33,28 +33,28 @@
     </head>
     <body>
         <div class="width">
-			<div id="nav">
-				<div class="nav-inner width">
-					<a href="../../home">
-						<div id="logo"></div>
-						<div id="logo_name">What Would You Do Here?</div>
-					</a>
-					<div id="user_nav" class="nav">
-						<ul>
-							<a href="#"><li>Log in</li></a>
-							<a href="#"><li>Sign up</li></a>
-						</ul>
-					</div>
-					<div id="main_nav" class="nav">
-						<ul>
-							<a href="../../locations"><li>Locations</li></a>
-							<a href="../../ideas" class="active"><li>Ideas</li></a>
-							<a href="../../projects"><li>Projects</li></a>
-							<a href="../../contact"><li>Contact</li></a>
-						</ul>
-					</div>
-				</div>
-			</div>
+            <div id="nav">
+	            <div class="nav-inner width">
+	                <a href="../home">
+	                    <div id="logo"></div>
+	                    <div id="logo_name">What Would You Do Here?</div>
+	                <div id="user_nav" class="nav">
+	                    <ul>
+	                        <a href="#"><li>Log in</li></a>
+	                        <a href="#"><li>Sign up</li></a>
+	                        <a href="../contact"><li>Contact</li></a>
+	                    </ul>
+	                </div>
+	                <div id="main_nav" class="nav">
+	                    <ul>
+	                        <a href="../../locations"><li>Locations</li></a>
+	                        <a href="..ideas" class="active"><li>Ideas</li></a>
+	                        <a href="../../plans"><li>Plans</li></a>
+	                        <a href="../../projects"><li>Projects</li></a>
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
 		</div>
         <div class="outside" class="width">
             <div id="wrapper">
