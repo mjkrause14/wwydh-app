@@ -104,20 +104,21 @@ jQuery(document).ready(function($) {
             leader: ($(".pane .button.active").data("leader") === 1) ? true : false,
             title: $("input[name=title]").val(),
             description: $("textarea").val(),
+            category: $("[name=category]").val(),
             location_requirements: location_requirements,
             contributions: contributions
         };
 
         $.post("../../helpers/ideas/new.php", form, function(data) {
 
-            if (data == 1) {
-                // successfully inserted idea
-                $(elem).parents(".pane").addClass("done").removeClass("active");
-                $(".pane[data-index=-2]").addClass("active");
-            } else {
+            if (data == -1) {
                 // login required
                 $(elem).parents(".pane").addClass("done").removeClass("active");
                 $(".pane[data-index=-1]").addClass("active");
+            } else {
+                // successfully inserted idea
+                $(elem).parents(".pane").addClass("done").removeClass("active");
+                $(".pane[data-index=-2]").addClass("active");
             }
         }, "text");
     }

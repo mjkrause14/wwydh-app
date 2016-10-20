@@ -3,6 +3,7 @@
 	session_start();
 
 	include "../helpers/paginate.php";
+	include "../helpers/vars.php";
 	include "../helpers/conn.php";
 
 	$theQuery = "";
@@ -91,10 +92,14 @@
 								<i class="fa fa-thumbs-down" aria-hidden="true"></i>
 							</div>
 						</div>
-						<div class="idea_image" style="background-image: url(../helpers/location_images/<?php if (isset($row['image'])) echo $row['image']; else echo "no_image.jpg";?>);"></div>
+						<div class="idea_image_wrapper">
+							<i class="fa <?php echo $location_categories[$row['category']]['fa-icon'] ?>"></i>
+							<div class="overlay"></div>
+							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $location_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
+						</div>
 						<div class="idea_desc">
 							<div class="title"><?php echo $row["title"] ?></div>
-							<div class="address"><?php echo $row["mailing_address"] ?></div>
+							<div class="category"><?php echo $location_categories[$row['category']]["title"] ?></div>
 							<div class="description"><?php echo $row["description"] ?></div>
 							<?php if (count($row["checklist"]) > 0) { ?>
 								<div class="checklist">

@@ -13,8 +13,8 @@
             exit();
         }
 
-        $q = $conn->prepare("INSERT INTO ideas (title, description) VALUES (?, ?)");
-        $q->bind_param("ss", $_POST["title"], $_POST["description"]);
+        $q = $conn->prepare("INSERT INTO ideas (title, description, category) VALUES (?, ?, ?)");
+        $q->bind_param("sss", $_POST["title"], $_POST["description"], $_POST["category"]);
         $q->execute();
 
         $id = $conn->insert_id;

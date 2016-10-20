@@ -1,6 +1,8 @@
 <?php
     session_start();
 
+    require_once "../../helpers/vars.php";
+
     if (isset($_GET["location"])) {
         require_once "../../helpers/conn.php";
         $locationid = $_GET["location"];
@@ -62,16 +64,24 @@
                         <div class="title">Basic Information</div>
                     </div>
                     <div class="pane-content">
-                        <div class="pane-content-intro">Who would lead this project?</div>
+                        <div class="pane-content-intro">Would you like credit for this idea?</div>
                         <div class="button active" data-leader="1">
-                            <div>Me</div>
+                            <div>Give me credit!</div>
                         </div>
                         <div class="button" data-leader="0">
-                            <div>Not Me</div>
+                            <div>No thanks!</div>
                         </div>
                         <div class="login-warning active">This will require an account!</div>
                         <label for="title">Title</label>
                         <input name="title" type="text" placeholder="What is your idea? Be specific!" />
+                        <label>Category</label>
+                        <select name="category">
+                            <option disabled selected>Choose one...</option>
+                            <?php foreach ($location_categories as $key => $lc) { ?>
+                                <option value="<?php echo $key ?>"><?php echo $lc["title"] ?></option>
+                            <?php } ?>
+
+                        </select>
                         <label for="description">Description</label>
                         <textarea name="description" placeholder="Describe your idea in detail."></textarea>
                     </div>

@@ -5,7 +5,7 @@
     else // header("Location: ../");
 
     if (isset($_GET["idea"])) {
-        //BACKEND: handle editing an idea here, EG change title, retrieve entry completion from database and set that pane as active, populate
+        //BACKEND:60 handle editing an idea here, EG change title, retrieve entry completion from database and set that pane as active, populate
     }
 ?>
 

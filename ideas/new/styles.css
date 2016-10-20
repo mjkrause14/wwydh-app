@@ -18,7 +18,7 @@ body {
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scroll: touch;
-    min-height: 650px;
+    min-height: 670px;
 }
 
 .pane {
@@ -140,6 +140,16 @@ body {
     outline: 0;
     transition: all 0.2s ease;
     -webkit-user-select: auto;
+}
+
+.pane select {
+    width: 100%;
+    -webkit-appearance: none;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 1px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
 }
 
 .pane textarea {
