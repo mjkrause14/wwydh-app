@@ -104,3 +104,24 @@
     font-size: 14px;
     color: #418040;
 }
+
+#header,#footer,#content {position:absolute; right:0; left:0}
+
+#header{
+    background: ##418040; green;
+    width: 100%;
+    left:0;
+    position:absolute;
+}
+
+#footer{
+    background: ##418040; green;
+    width: 100%;
+    left:0;
+    position:absolute;
+}
+
+#content{
+    top:100px;
+    bottom:100px;
+}
