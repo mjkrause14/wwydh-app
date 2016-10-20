@@ -1,0 +1,111 @@
+/* Globals - The title is misleading xD */
+
+.width {
+    max-width: 1600px;
+    padding: 0px 15px;
+    margin: auto;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Open Sans", sans-serif;
+    color: #3a3a3a;
+}
+
+#nav {
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    padding: 5px 0;
+    width: 100%;
+    z-index: 10;
+    box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
+}
+
+.nav-inner {
+    overflow: hidden;
+}
+
+#nav #logo {
+    background-image: url(../images/logo.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 40px;
+    width: 40px;
+    float: left;
+    margin-top: 5px;
+}
+
+#logo_name {
+    color: #939393;
+    font-weight: 700;
+    margin: 16px 0px 0px 10px;
+    width: 250px;
+    float: left;
+}
+
+.nav {
+    width: 400px;
+    text-align: center;
+    margin: auto;
+}
+
+.nav a {
+    color: #939393;
+    text-decoration: none;
+    transition: color 0.15s ease;
+    font-size: 14px;
+    position: relative;
+}
+
+.nav a:hover, .nav a.active {
+    color: #418040;
+}
+
+.nav a.active:after {
+    content: " ";
+    background: #418040;
+    height: 2px;
+    width: 100%;
+    left: 0;
+    position: absolute;
+    bottom: -3px;
+}
+
+.nav ul {
+    padding: 0;
+}
+
+.nav li {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0px 4px;
+}
+
+#user_nav {
+    width: 200px;
+    float: right;
+    text-align: right;
+}
+
+#footer {
+    background-color: #262626;
+    text-align: center;
+    color: white;
+    clear: both;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+#footer .grid-inner {
+    max-width: 1400px;
+    margin: 60px auto;
+}
+
+#pagination a.active {
+    color: #3a3a3a;
+}
