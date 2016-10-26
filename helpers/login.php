@@ -1,61 +1,31 @@
 <?php
-    session_start();
-    require_once "conn.php";
+include("conn.php");
+session_start();
+if($_SERVER["REQUEST_METHOD"] == "POST")
+ {
+// username and password received from loginform
+$username=mysqli_real_escape_string($conn,$_POST['username']);
+$password=mysqli_real_escape_string($conn,$_POST['password']);
+$password=md5($password);
 
-    // it will never let you open index(login) page if session is set
-    if (isset($_SESSION['username'])) {
-        header("Location: index.php");
-        exit();
-    }
+$sql_query="SELECT * FROM users WHERE username='$username' and password='$password'";
+$result=mysqli_query($conn,$sql_query)or die(mysqli_error($conn));
+$row=mysqli_fetch_array($result,MYSQLI_ASSOC);
+$count=mysqli_num_rows($result);
 
-    $error = false;
 
-    if (isset($_POST['btn-login'])) {
-        // prevent sql injections/ clear user invalid inputs
-        $email = trim($_POST['email']);
-        $email = strip_tags($email);
-        $email = htmlspecialchars($email);
+// If result matched $username and $password, table row must be 1 row
+if($count==1)
+{
+$_SESSION['login_user']=$username;
 
-        $pass = trim($_POST['pass']);
-        $pass = strip_tags($pass);
-        $pass = htmlspecialchars($pass);
-        // prevent sql injections / clear user invalid inputs
-
-    if (empty($email)) {
-        $error = true;
-        $emailError = "Please enter your email address.";
-    } else if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
-        $error = true;
-        $emailError = "Please enter valid email address.";
-    }
-
-    if (empty($pass)) {
-        $error = true;
-        $passError = "Please enter your password.";
-    }
-
-    // if there's no error, continue to login
-    if (!$error) {
-        //$password = hash('sha256', $pass); // password hashing using SHA256
-
-        $theQuery = "SELECT * FROM users WHERE email= 'Bill@aol.com'";
-        $res = $conn->query($theQuery);
-        //$res->execute();
-        $row=mysqli_fetch_array($res);
-        // $count = mysqli_num_rows($res);  //if uname/pass correct it returns must be 1 row
-        $count =1;
-
-        if($row['password']==$pass ) {
-            $_SESSION['username'] = $row['id'];
-            header("Location: homepg.php");
-
-            echo "Thank You!";
-        } else {
-            $errMSG = "Incorrect Credentials, Try again!...";
-        }
-
-    }
- }
+header("location: homepg.php");
+}
+else
+{
+$error="Username or Password is invalid";
+}
+}
 ?>
 <!DOCTYPE html>
 <html>
