@@ -1,12 +1,17 @@
 <?php
     header("Content-type: text/plain");
-    
+
     session_start();
     require_once "conn.php";
 
     if (isset($_SESSION["user"])) {
         // already logged in, return 1
         echo 1;
+        exit();
+    }
+
+    if (strlen($_POST["username"]) == 0 || strlen($_POST["password"]) == 0) {
+        echo 0;
         exit();
     }
 
@@ -19,6 +24,7 @@
 
     if (isset($user["id"])) {
         // login successful, return 1
+        $_SESSION["user"] = $user;
         echo 1;
         exit();
     } else {

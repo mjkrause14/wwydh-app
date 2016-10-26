@@ -18,15 +18,27 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    overflow: hidden;
     padding: 5px 0;
     width: 100%;
     z-index: 10;
     box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 }
 
+#main_nav {
+    position: absolute;
+    margin: auto;
+    left: 0; right: 0;
+}
+
 .nav-inner {
-    overflow: hidden;
+    padding-bottom: 5px;
+}
+
+.clearfix:after {
+   content: " ";
+   display: block;
+   height: 0;
+   clear: both;
 }
 
 #nav #logo {
@@ -90,6 +102,77 @@ body {
     width: 200px;
     float: right;
     text-align: right;
+}
+
+#user_nav .loggedin {
+    cursor: pointer;
+    position: relative;
+}
+
+#user_nav .loggedin.down .chevron {
+    transform: rotateZ(180deg);
+}
+
+#user_nav .chevron {
+    color: #939393;
+    float: right;
+    margin-top: 16px;
+    margin-left: 10px;
+    transition: transform 0.2s ease;
+    transform: rotateZ(0deg);
+}
+
+#user_nav .loggedin .greet {
+    float: right;
+    color: #939393;
+    margin-right: 10px;
+    margin-top: 17px;
+}
+
+#user_nav .loggedin .image {
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    float: right;
+    margin-top: 8px;
+}
+
+#user_nav #nav_submenu {
+    visibility: hidden;
+    padding: 8px;
+    background: white;
+    border-radius: 2px;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    min-width: 180px;
+    box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+}
+
+#user_nav #nav_submenu ul {
+    margin: 0;
+}
+
+#user_nav .loggedin.down #nav_submenu {
+    top: 60px;
+    opacity: 1;
+    visibility: visible;
+}
+
+#user_nav .loggedin.down #nav_submenu li {
+    width: 100%;
+    padding: 10px 0px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+#user_nav .loggedin.down #nav_submenu a:last-child li {
+    text-align: left;
+    border-bottom: 1px solid transparent;
 }
 
 #footer {

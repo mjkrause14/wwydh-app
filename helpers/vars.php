@@ -5,7 +5,7 @@
         "0" => [
             "title" => "other",
             "fa-icon" => "fa-ellipsis-h",
-            "image" => "coffee.jpg"
+            "image" => "other.jpg"
         ],
         "1" => [
             "title" => "coffee shop",

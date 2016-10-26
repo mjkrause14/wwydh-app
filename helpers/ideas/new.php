@@ -4,7 +4,7 @@
     session_start();
 
     // check if data was submitted
-    if (isset($_POST["title"])) {
+    if (isset($_POST["submit"])) {
         require_once "../conn.php";
 
         // check login, return login error
