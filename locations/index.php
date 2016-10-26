@@ -41,7 +41,7 @@
 		<div class="width">
 			<div id="nav">
 	            <div class="nav-inner width">
-	                <a href="../home">
+	                <a href="..//home">
 	                    <div id="logo"></div>
 	                    <div id="logo_name">What Would You Do Here?</div>
 	                <div id="user_nav" class="nav">

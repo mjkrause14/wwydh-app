@@ -105,8 +105,13 @@ body {
 }
 
 #user_nav .loggedin {
-    cursor: pointer;
     position: relative;
+    float: right;
+}
+
+#user_nav .loggedin .click-space {
+    cursor: pointer;
+    float: right;
 }
 
 #user_nav .loggedin.down .chevron {

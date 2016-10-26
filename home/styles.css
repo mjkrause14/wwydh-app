@@ -37,7 +37,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 10;
     position: relative;
 }
 
@@ -408,6 +407,10 @@ ul.tab li {
 
 .sidebar-view.hidden:before {
     content: "\f0c9";
+}
+
+.sidenav a {
+    text-decoration: none;
 }
 
 .sidenav {

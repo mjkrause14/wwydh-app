@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
     });
 
     $(".login input[type=submit]").click(function() {
-        var elem = $(this).parents(".pane");
+        var elem = $(this);
         doLogin(elem);
     });
 
@@ -71,9 +71,7 @@ jQuery(document).ready(function($) {
         $.post("../../helpers/standalone-login.php", login, function(data) {
 
             if (data == 1) {
-                // successfully logged in
-                $(elem).addClass("done").removeClass("active");
-                $(".pane[data-index=-2]").addClass("active");
+                submitIdea(elem);
             } else {
                 // bad login information
                 alert("Login information incorrect! Please try again!");
@@ -106,8 +104,11 @@ jQuery(document).ready(function($) {
             description: $("textarea").val(),
             category: $("[name=category]").val(),
             location_requirements: location_requirements,
-            contributions: contributions
+            contributions: contributions,
+            submit: "true"
         };
+
+        console.log(form);
 
         $.post("../../helpers/ideas/new.php", form, function(data) {
 

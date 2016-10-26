@@ -35,7 +35,7 @@
         <div class="width">
             <div id="nav">
 	            <div class="nav-inner width">
-	                <a href="../home">
+	                <a href="../../home">
 	                    <div id="logo"></div>
 	                    <div id="logo_name">What Would You Do Here?</div>
 	                <div id="user_nav" class="nav">
@@ -48,7 +48,7 @@
 	                <div id="main_nav" class="nav">
 	                    <ul>
 	                        <a href="../../locations"><li>Locations</li></a>
-	                        <a href="..ideas" class="active"><li>Ideas</li></a>
+	                        <a href=".." class="active"><li>Ideas</li></a>
 	                        <a href="../../plans"><li>Plans</li></a>
 	                        <a href="../../projects"><li>Projects</li></a>
 	                    </ul>
@@ -137,7 +137,7 @@
                     </div>
                     <div class="pane-content">
                         <div class="pane-content-intro error">
-                            You've decided to manage this idea! Please login!
+                            You must be logged in to receive credit for this idea!
                         </div>
                         <div class="login-marker">
                             <i class="fa fa-lock" aria-hidden="true"></i>

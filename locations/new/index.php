@@ -60,7 +60,7 @@
 		if ($ar_Rowcount > 0 && !(isset($_GET["override"]) && $_GET["override"]=="true"))
 		{
 			$currentState = "confirmReplace";
-			header('Location: add.php?frmAction=confirmReplace&id=' . $ar_Row['id']);
+			header('Location: ?frmAction=confirmReplace&id=' . $ar_Row['id']);
 			$addResult = "Already in DB";
 		}
 		else
@@ -87,7 +87,7 @@
 			{
 				mysqli_commit($conn);
 				$addResult = "" . mysqli_error($conn);
-				header('Location: add.php?frmAction=AddSuccess');
+				header('Location: ?frmAction=AddSuccess');
 			}
 		}
 		mysqli_close($conn);
@@ -172,7 +172,7 @@
     <body onload="initMap()">
         <div id="nav">
             <div class="nav-inner width">
-                <a href="../home">
+                <a href="../../home">
                     <div id="logo"></div>
                     <div id="logo_name">What Would You Do Here?</div>
                 <div id="user_nav" class="nav">
@@ -212,7 +212,7 @@
 				echo $_POST["sAddress"];
 			}
 			?>
-				<form action="add.php?frmAction=AddLocation" method="post">
+				<form action="?frmAction=AddLocation" method="post">
 					Address: <input type="text" class="addLocFormInput" name="sAddress"><br>
 					Block: <input type="text" class="addLocFormInput" name="sBlock"><br>
 					Lot: <input type="text" class="addLocFormInput" name="sLot"><br>

@@ -26,7 +26,7 @@
 		LEFT JOIN checklist_items cc ON cc.checklist_id = c.id
 		WHERE cc.contributer_id IS NULL AND i.location_id = {$_GET["location"]} GROUP BY i.id");
 	} else {
-		$q = $conn->prepare("SELECT u.name AS `name`, i.*, GROUP_CONCAT(cc.description SEPARATOR '[-]') as `checklist`, l.mailing_address, l.image FROM ideas i LEFT JOIN  users u ON u.id = i.leader_id LEFT JOIN locations l ON i.location_id = l.id LEFT JOIN checklists c ON
+		$q = $conn->prepare("SELECT CONCAT(u.first, ' ', u.last) AS `name`, i.*, GROUP_CONCAT(cc.description SEPARATOR '[-]') as `checklist`, l.mailing_address, l.image FROM ideas i LEFT JOIN  users u ON u.id = i.leader_id LEFT JOIN locations l ON i.location_id = l.id LEFT JOIN checklists c ON
 		c.idea_id = i.id LEFT JOIN checklist_items cc ON cc.checklist_id = c.id WHERE cc.contributer_id IS NULL GROUP BY i.id LIMIT $itemCount OFFSET $offset");
 	}
 

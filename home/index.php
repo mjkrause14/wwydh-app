@@ -16,7 +16,7 @@
         array_push($locations, $row);
     }
 
-    $q = $conn->prepare("SELECT p.*, u.name AS leader, l.mailing_address AS address, l.image AS image FROM projects p LEFT JOIN users u ON p.leader_id = u.id LEFT JOIN ideas i ON p.idea_id = i.id LEFT JOIN locations l ON i.location_id = l.id");
+    $q = $conn->prepare("SELECT p.*, CONCAT(u.first, ' ', u.last) AS leader, l.mailing_address AS address, l.image AS image FROM projects p LEFT JOIN users u ON p.leader_id = u.id LEFT JOIN ideas i ON p.idea_id = i.id LEFT JOIN locations l ON i.location_id = l.id");
     $q->execute();
 
     $data = $q->get_result();
@@ -35,6 +35,8 @@
         <link href="styles.css" type="text/css" rel="stylesheet" />
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzAMBl8WEWkqExNw16kEk40gCOonhMUmw" async defer></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://use.fontawesome.com/42543b711d.js"></script>
+        <script src="../helpers/globals.js" type="text/javascript"></script>
 
         <script type="text/javascript">
             // convert location data from php to javascript using JSON
@@ -45,16 +47,36 @@
     </head>
     <body onload="initMap(); openNav();">
         <div id="nav">
-            <div class="nav-inner width">
+            <div class="nav-inner width clearfix">
                 <a href="../home">
                     <div id="logo"></div>
                     <div id="logo_name">What Would You Do Here?</div>
+                    <div class="spacer"></div>
+                </a>
                 <div id="user_nav" class="nav">
-                    <ul>
-                        <a href="#"><li>Log in</li></a>
-                        <a href="#"><li>Sign up</li></a>
-                        <a href="../contact"><li>Contact</li></a>
-                    </ul>
+                    <?php if (!isset($_SESSION["user"])) { ?>
+                        <ul>
+                            <a href="../login"><li>Log in</li></a>
+                            <a href="#"><li>Sign up</li></a>
+                            <a href="../contact"><li>Contact</li></a>
+                        </ul>
+                    <?php } else { ?>
+                        <div class="loggedin">
+                            <span class="click-space">
+                                <span class="chevron"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                                <div class="image" style="background-image: url(../helpers/user_images/<?php echo $_SESSION["user"]["image"] ?>);"></div>
+                                <span class="greet">Hi <?php echo $_SESSION["user"]["first"] ?>!</span>
+                            </span>
+
+                            <div id="nav_submenu">
+                                <ul>
+                                    <a href="../dashboard"><li>Dashboard</li></a>
+                                    <a href="../profile"><li>My Profile</li></a>
+                                    <a href="../helpers/logout.php?go=home"><li>Log out</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
                 <div id="main_nav" class="nav">
                     <ul>
@@ -71,10 +93,10 @@
                 <div class="sidebar-tools">
 
                 </div>
-                <div id="sideIdea" class="side-button">I Have an Idea</div>
-                <div id="sideLocation" class="side-button">I Have a Location</div>
+                <a href="../ideas/new"><div id="sideIdea" class="side-button">I Have an Idea</div></a>
+                <a href="../locations/new"><div id="sideLocation" class="side-button">I Have a Location</div></a>
                 <div id="sideHelp" class="side-button">I Want to Contribute</div>
-                <div id="sideContact" class="side-button">Contact Us</div>
+                <a href="../contact"><div id="sideContact" class="side-button">Contact Us</div></a>
             </div>
             <div id="map"></div>
             <div id="welcome">
@@ -96,8 +118,8 @@
                     foreach($locations as $l) { ?>
                         <div class="location">
                             <div class="btn-group">
-                                <div class="btn newidea"><a href="../ideas/new?location=<?php echo $l["id"] ?>">I have an idea</a></div>
-                                <?php if ($l["ideas"] > 0) { ?> <div class="btn seeideas"><a href="../ideas?location=<?php echo $l["id"] ?>">See other ideas here</a></div> <?php } ?>
+                                <div class="btn newidea"><a href="../ideas/new?location=<?php echo $l["id"] ?>">Make a Plan Here</a></div>
+                                <?php if ($l["ideas"] > 0) { ?> <div class="btn seeideas"><a href="../ideas?location=<?php echo $l["id"] ?>">See other Plans here</a></div> <?php } ?>
                                 <div class="btn seelocation"><a href="../locations/propertyInfo.php?id=<?php echo $l["id"] ?>">View full location</a></div>
                             </div>
                             <div class="location_image" style="background-image: url(../helpers/location_images/<?php if (isset($l['image'])) echo $l['image']; else echo "no_image.jpg";?>);">
