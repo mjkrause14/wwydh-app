@@ -5,7 +5,7 @@
     include "../helpers/conn.php";
 
     // BACKEND:0 change homepage location query to ORDER BY RAND() LIMIT 3
-    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT i.id) AS ideas, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN ideas i ON i.location_id = l.id LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY ideas DESC, RAND() LIMIT 4");
+    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT p.id) AS plans, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN plans p ON p.location_id = l.id LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY plans DESC, RAND() LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
@@ -16,7 +16,7 @@
         array_push($locations, $row);
     }
 
-    $q = $conn->prepare("SELECT p.*, CONCAT(u.first, ' ', u.last) AS leader, l.mailing_address AS address, l.image AS image FROM projects p LEFT JOIN users u ON p.leader_id = u.id LEFT JOIN ideas i ON p.idea_id = i.id LEFT JOIN locations l ON i.location_id = l.id");
+    $q = $conn->prepare("SELECT i.*, count(up.id) as `upvotes` FROM ideas i LEFT JOIN upvotes up ON up.idea_id = i.id GROUP BY i.id ORDER BY `upvotes` DESC LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
@@ -119,12 +119,12 @@
                         <div class="location">
                             <div class="btn-group">
                                 <div class="btn newidea"><a href="../ideas/new?location=<?php echo $l["id"] ?>">Make a Plan Here</a></div>
-                                <?php if ($l["ideas"] > 0) { ?> <div class="btn seeideas"><a href="../ideas?location=<?php echo $l["id"] ?>">See other Plans here</a></div> <?php } ?>
+                                <?php if ($l["plans"] > 0) { ?> <div class="btn seeideas"><a href="../plans?location=<?php echo $l["id"] ?>">See other Plans here</a></div> <?php } ?>
                                 <div class="btn seelocation"><a href="../locations/propertyInfo.php?id=<?php echo $l["id"] ?>">View full location</a></div>
                             </div>
                             <div class="location_image" style="background-image: url(../helpers/location_images/<?php if (isset($l['image'])) echo $l['image']; else echo "no_image.jpg";?>);">
-                                <?php if ($l["ideas"] > 0) { ?>
-                                    <div class="ideas_count"><?php echo $l["ideas"] ?></div>
+                                <?php if ($l["plans"] > 0) { ?>
+                                    <div class="ideas_count"><?php echo $l["plans"] ?></div>
                                 <?php } ?>
                             </div>
                             <div class="location_desc">
