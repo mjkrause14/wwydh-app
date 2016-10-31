@@ -47,7 +47,7 @@
     </head>
     <body onload="initMap(); openNav();">
         <div id="nav">
-            <div class="nav-inner width clearfix">
+            <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?> ">
                 <a href="../home">
                     <div id="logo"></div>
                     <div id="logo_name">What Would You Do Here?</div>

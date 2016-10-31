@@ -30,7 +30,7 @@ body {
     left: 0; right: 0;
 }
 
-.nav-inner {
+.loggedin.nav-inner {
     padding-bottom: 5px;
 }
 
