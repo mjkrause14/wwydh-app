@@ -1,6 +1,134 @@
-#footer {
+#wrapper {
+    max-width: 1600px;
+}
+
+#content {
+    width: 84%;
+    padding: 15px;
+    box-sizing: border-box;
+    background: white;
+    height: 20px;
     position: absolute;
-    bottom: 0;
+    right: 0;
+    z-index: 8;
+    overflow: hidden;
+    height: 100%;
+    overflow-y: scoll;
+    -webkit-overflow-scroll: touch;
+}
+
+#sidebar {
+    width: 16%;
+    padding: 15px;
+    box-sizing: border-box;
+    background: #418040;
+    height: 100%;
+    position: absolute;
     left: 0;
-    width: 100%;
+    z-index: 9;
+    min-width: 250px;
+}
+
+.inner {
+    margin-top: 80px;
+}
+
+#sidebar ul {
+    padding: 0px;
+}
+
+#sidebar li {
+    color: #d5edd5;
+    text-transform: Capitalize;
+    list-style-type: none;
+    padding: 10px 0px 10px 45px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s ease;
+    margin-left: 10px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+}
+
+#sidebar li i {
+    margin-right: 15px;
+    font-size: 26px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 25px;
+    text-align: center;
+    width: 30px;
+}
+
+#sidebar li .sidebar_badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 22px;
+    margin: auto;
+    padding: 3px 8px;
+    color: #418040;
+    background: #d5edd5;
+    border-radius: 3px;
+}
+
+#content #user_intro {
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    padding: 10px 20px;
+    position: relative;
+}
+
+#content #user_intro .image {
+    background-size: cover;
+    width: 150px;
+    height: 150px;
+    background-position: center;
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+
+#content #user_intro .name_rank {
+    float: left;
+    margin-top: 50px;
+    margin-left: 15px;
+}
+
+#content #user_intro #name {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+#content #user_intro #rank {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+#content #user_intro #counters {
+  float: right;
+  margin-top: 35px;
+}
+
+#content #user_intro #counters > div {
+  display: inline-block;
+  margin-left: 80px;
+}
+
+#content #user_intro #counters .counter_value {
+  text-align: center;
+  color: #418040;
+  font-weight: 600;
+  font-size: 40px;
+}
+
+#content #user_intro #counters .counter_label {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+  text-align: center;
 }

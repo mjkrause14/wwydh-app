@@ -26,8 +26,8 @@
 		LEFT JOIN checklist_items cc ON cc.checklist_id = c.id
 		WHERE cc.contributer_id IS NULL AND i.location_id = {$_GET["location"]} GROUP BY i.id");
 	} else {
-		$q = $conn->prepare("SELECT CONCAT(u.first, ' ', u.last) AS `name`, i.*, GROUP_CONCAT(cc.description SEPARATOR '[-]') as `checklist`, l.mailing_address, l.image FROM ideas i LEFT JOIN  users u ON u.id = i.leader_id LEFT JOIN locations l ON i.location_id = l.id LEFT JOIN checklists c ON
-		c.idea_id = i.id LEFT JOIN checklist_items cc ON cc.checklist_id = c.id WHERE cc.contributer_id IS NULL GROUP BY i.id LIMIT $itemCount OFFSET $offset");
+		$q = $conn->prepare("SELECT CONCAT(u.first, ' ', u.last) AS `name`, i.*, COUNT(upi.id) AS upvotes, COUNT(dwi.id) As downvotes FROM ideas i LEFT JOIN  users u ON u.id = i.owner LEFT JOIN upvotes_ideas upi ON i.id = upi.idea_id LEFT JOIN downvotes_ideas dwi ON
+		i.id = dwi.idea_id GROUP BY i.id ORDER BY upvotes DESC LIMIT $itemCount OFFSET $offset");
 	}
 
 	$q->execute();
@@ -101,6 +101,7 @@
 							<div class="title"><?php echo $row["title"] ?></div>
 							<div class="category"><?php echo $location_categories[$row['category']]["title"] ?></div>
 							<div class="description"><?php echo $row["description"] ?></div>
+							<?php /* ?>
 							<?php if (count($row["checklist"]) > 0) { ?>
 								<div class="checklist">
 									<span>Contributors Needed: </span>
@@ -114,6 +115,7 @@
 									</ul>
 								</div>
 							<?php } ?>
+							<?php */ ?>
 						</div>
 					</div>
 				</div>

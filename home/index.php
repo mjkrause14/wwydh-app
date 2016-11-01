@@ -16,7 +16,7 @@
         array_push($locations, $row);
     }
 
-    $q = $conn->prepare("SELECT i.*, count(up.id) as `upvotes` FROM ideas i LEFT JOIN upvotes up ON up.idea_id = i.id GROUP BY i.id ORDER BY `upvotes` DESC LIMIT 4");
+    $q = $conn->prepare("SELECT i.*, count(up.id) as `upvotes` FROM ideas i LEFT JOIN upvotes_ideas up ON up.idea_id = i.id GROUP BY i.id ORDER BY `upvotes` DESC LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
