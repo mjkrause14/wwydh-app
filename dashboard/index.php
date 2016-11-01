@@ -13,16 +13,17 @@
 
     $q = $conn->prepare("SELECT (
 	(SELECT COUNT(p.id) * 100 FROM projects p INNER JOIN plans pl ON p.plan_id = pl.id INNER JOIN ideas i ON i.id = pl.idea_id INNER JOIN checklists c ON c.plan_id = pl.id INNER JOIN checklist_items ci ON ci.checklist_id = c.id AND ci.contributer_id = $id WHERE p.completed = 1) +
-	(SELECT (pl.id) * 100 AS count FROM plans pl INNER JOIN projects p ON p.plan_id = pl.id WHERE pl.creator_id = $id) +
+	(SELECT COUNT(pl.id) * 100 FROM plans pl INNER JOIN projects p ON p.plan_id = pl.id WHERE pl.creator_id = $id) +
 	(SELECT COUNT(i.id) * 50 FROM ideas i INNER JOIN plans pl ON pl.idea_id = i.id INNER JOIN projects p ON p.plan_id = pl.id AND p.completed = 1 WHERE i.owner = $id) +
 	(SELECT COUNT(pl.id) * 25 FROM plans pl INNER JOIN projects p ON p.plan_id = pl.id WHERE pl.creator_id = $id) +
 	(SELECT COUNT(i.id) * 15 FROM ideas i INNER JOIN plans pl ON pl.idea_id = i.id INNER JOIN projects p ON p.plan_id = pl.id WHERE i.owner = $id) +
-	(SELECT COUNT(i.id) * 5 FROM ideas i INNER JOIN plans pl ON pl.idea_id = i.id WHERE i.owner = $id AND pl.published = 1) +
+	(SELECT COUNT(i.id) * 5 FROM ideas i INNER JOIN plans pl ON pl.idea_id = i.id WHERE i.owner = 1 AND pl.published = $id) +
 	(SELECT COUNT(up_i.id) * 2 FROM upvotes_ideas up_i INNER JOIN ideas i ON i.id = up_i.idea_id WHERE up_i.user_id = $id) +
 	(SELECT COUNT(up_p.id) * 2 FROM upvotes_plans up_p INNER JOIN plans pl ON pl.id = up_p.plan_id WHERE up_p.user_id = $id)
-) as points, (SELECT count(p.id) as count FROM projects p WHERE p.leader_id = $id) as `projects lead`,
-(SELECT count(ci.id) AS `count` FROM projects p INNER JOIN plans pl ON p.plan_id = pl.id INNER JOIN ideas i ON i.id = pl.idea_id INNER JOIN checklists c ON c.plan_id = pl.id INNER JOIN checklist_items ci ON ci.checklist_id = c.id AND ci.contributer_id = $id WHERE p.completed = 1) as `projects contributed to`,
-completed_projects.count AS `completed projects` FROM (SELECT COUNT(p.id) AS count FROM projects p INNER JOIN plans pl ON p.plan_id = pl.id INNER JOIN ideas i ON i.id = pl.idea_id INNER JOIN checklists c ON c.plan_id = pl.id INNER JOIN checklist_items ci ON ci.checklist_id = c.id AND ci.contributer_id = $id WHERE p.completed = 1) AS completed_projects;
+) as points, (SELECT COUNT(p.id) FROM projects p WHERE p.leader_id = $id) AS `projects lead`,
+(SELECT COUNT(ci.id) FROM projects p INNER JOIN plans pl ON p.plan_id = pl.id INNER JOIN ideas i ON i.id = pl.idea_id INNER JOIN checklists c ON c.plan_id = pl.id INNER JOIN checklist_items ci ON ci.checklist_id = c.id AND ci.contributer_id = $id WHERE p.completed = 1)
+AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER JOIN plans pl ON p.plan_id = pl.id INNER JOIN ideas i ON i.id = pl.idea_id INNER JOIN checklists c ON c.plan_id = pl.id INNER JOIN checklist_items ci ON ci.checklist_id = c.id AND ci.contributer_id = $id WHERE p.completed = 1) AS `completed projects`,
+(SELECT COUNT(m.id) FROM messages m WHERE m.to = $id AND m.read = 0) AS messages
 ");
     $q->execute();
 
@@ -121,7 +122,9 @@ completed_projects.count AS `completed projects` FROM (SELECT COUNT(p.id) AS cou
                         <li>
                             <i class="fa fa-inbox" aria-hidden="true"></i>
                             Inbox
-                            <div class="sidebar_badge">2</div>
+                            <?php if ($data["messages"] > 0) { ?>
+                                <div class="sidebar_badge"><?php echo $data["messages"] ?></div>
+                            <?php } ?>
                         </li>
                         <li>
                             <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -129,7 +132,11 @@ completed_projects.count AS `completed projects` FROM (SELECT COUNT(p.id) AS cou
                             <div class="sidebar_badge">1</div>
                         </li>
                         <li><i class="fa fa-lightbulb-o" aria-hidden="true"></i>Your Entries</li>
-                        <li><i class="fa fa-list" aria-hidden="true"></i>Your List</li>
+                        <li>
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                            Your List
+                            <div class="sidebar_badge">5</div>
+                        </li>
                     </ul>
                 </div>
             </div>
