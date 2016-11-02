@@ -5,7 +5,7 @@
     include "../../helpers/conn.php";
 
     // BACKEND:0 change homepage location query to ORDER BY RAND() LIMIT 3
-    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT i.id) AS ideas, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN ideas i ON i.location_id = l.id LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY ideas DESC, RAND() LIMIT 4");
+    $q = $conn->prepare("SELECT l.* FROM locations l ORDER BY RAND() LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
@@ -14,16 +14,6 @@
     while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
         if (isset($row["features"])) $row["features"] = explode("[-]", $row["features"]);
         array_push($locations, $row);
-    }
-
-    $q = $conn->prepare("SELECT p.*, u.name AS leader, l.mailing_address AS address, l.image AS image FROM projects p LEFT JOIN users u ON p.leader_id = u.id LEFT JOIN ideas i ON p.idea_id = i.id LEFT JOIN locations l ON i.location_id = l.id");
-    $q->execute();
-
-    $data = $q->get_result();
-    $projects = [];
-
-    while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
-        array_push($projects, $row);
     }
 
 	//$currentState = "na";
