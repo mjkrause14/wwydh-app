@@ -16,6 +16,8 @@
 	$total = $q->get_result()->fetch_array(MYSQLI_ASSOC)["total"];
 	$offset = $itemCount * ($page - 1);
 
+	$id = isset($_SESSION["user"]["id"]) ? $_SESSION["user"]["id"] : 0;
+
 	// BACKEND:10 change locations search code to prepared statements to prevent SQL injection
 	if (isset($_GET["isSearch"])) {
 		$theQuery = "SELECT * FROM `locations` WHERE `building_address` LIKE '%{$_GET["sAddress"]}%' AND `building_address` LIKE '%{$_GET["sAddress"]}%' AND `block` LIKE '%{$_GET["sBlock"]}%' AND `lot` LIKE '%{$_GET["sLot"]}%' AND `zip_code` LIKE '%{$_GET["sZip"]}%' AND `city` LIKE '%{$_GET["sCity"]}%' AND `neighborhood` LIKE '%{$_GET["sNeighborhood"]}%' AND `police_district` LIKE '%{$_GET["sPoliceDistrict"]}%' AND `council_district` LIKE '%{$_GET["sCouncilDistrict"]}%' AND `longitude` LIKE '%{$_GET["sLongitude"]}%' AND `latitude` LIKE '%{$_GET["sLatitude"]}%' AND `owner` LIKE '%{$_GET["sOwner"]}%' AND `use` LIKE '%{$_GET["sUse"]}%' AND `mailing_address` LIKE '%{$_GET["sMailingAddr"]}%'";
@@ -26,8 +28,9 @@
 		LEFT JOIN checklist_items cc ON cc.checklist_id = c.id
 		WHERE cc.contributer_id IS NULL AND i.location_id = {$_GET["location"]} GROUP BY i.id");
 	} else {
-		$q = $conn->prepare("SELECT CONCAT(u.first, ' ', u.last) AS `name`, i.*, COUNT(upi.id) AS upvotes, COUNT(dwi.id) As downvotes FROM ideas i LEFT JOIN  users u ON u.id = i.owner LEFT JOIN upvotes_ideas upi ON i.id = upi.idea_id LEFT JOIN downvotes_ideas dwi ON
-		i.id = dwi.idea_id GROUP BY i.id ORDER BY upvotes DESC LIMIT $itemCount OFFSET $offset");
+		$q = $conn->prepare("SELECT i.*, COUNT(up_i.id) AS `upvotes`, COUNT(down_i.id) AS `downvotes`, (COUNT(up_i.id) - COUNT(down_i.id)) AS `vote coef`, COUNT(up_i_u.id) AS `upvoted`, COUNT(down_i_u.id) AS `downvoted` FROM ideas i LEFT JOIN
+		upvotes_ideas up_i ON up_i.idea_id = i.id LEFT JOIN downvotes_ideas down_i ON down_i.idea_id = i.id LEFT JOIN upvotes_ideas
+		up_i_u ON up_i_u.user_id = $id AND up_i_u.idea_id = i.id LEFT JOIN downvotes_ideas down_i_u ON down_i_u.user_id = $id AND down_i_u.idea_id = i.id GROUP BY i.id ORDER BY `vote coef` DESC LIMIT $itemCount OFFSET $offset");
 	}
 
 	$q->execute();
@@ -42,20 +45,43 @@
 		<link href="styles.css" type="text/css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="https://use.fontawesome.com/42543b711d.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script src="../helpers/globals.js" type="text/javascript"></script>
+		<script src="scripts.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<div class="width">
 			<div id="nav">
-	            <div class="nav-inner width">
+	            <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?>">
 	                <a href="../home">
 	                    <div id="logo"></div>
 	                    <div id="logo_name">What Would You Do Here?</div>
+	                    <div class="spacer"></div>
+	                </a>
 	                <div id="user_nav" class="nav">
-	                    <ul>
-	                        <a href="#"><li>Log in</li></a>
-	                        <a href="#"><li>Sign up</li></a>
-	                        <a href="../contact"><li>Contact</li></a>
-	                    </ul>
+	                    <?php if (!isset($_SESSION["user"])) { ?>
+	                        <ul>
+	                            <a href="../login"><li>Log in</li></a>
+	                            <a href="#"><li>Sign up</li></a>
+	                            <a href="../contact"><li>Contact</li></a>
+	                        </ul>
+	                    <?php } else { ?>
+	                        <div class="loggedin">
+	                            <span class="click-space">
+	                                <span class="chevron"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+	                                <div class="image" style="background-image: url(../helpers/user_images/<?php echo $_SESSION["user"]["image"] ?>);"></div>
+	                                <span class="greet">Hi <?php echo $_SESSION["user"]["first"] ?>!</span>
+	                            </span>
+
+	                            <div id="nav_submenu">
+	                                <ul>
+	                                    <a href="../dashboard"><li>Dashboard</li></a>
+	                                    <a href="../profile"><li>My Profile</li></a>
+	                                    <a href="../helpers/logout.php?go=home"><li>Log out</li></a>
+	                                </ul>
+	                            </div>
+	                        </div>
+	                    <?php } ?>
 	                </div>
 	                <div id="main_nav" class="nav">
 	                    <ul>
@@ -82,15 +108,20 @@
 			while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
 				if (isset($row["checklist"])) $row["checklist"] = explode("[-]", $row["checklist"]); ?>
 
-				<div class="idea">
+				<div class="idea
+				<?php if (isset($row["owner"])) echo "mine" ?>"
+				data-idea="<?php echo $row["id"] ?>">
 					<div class="grid-item width">
 						<div class="vote">
-							<div class="upvote">
+							<div class="upvote <?php if ($row["upvoted"] == 1) echo "me"; ?>">
+								<div class="vote_count"><?php echo $row["upvotes"] ?></div>
 								<i class="fa fa-thumbs-up" aria-hidden="true"></i>
 							</div>
-							<div class="downvote">
+							<div class="downvote <?php if ($row["downvoted"] == 1) echo "me"; ?>">
 								<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+								<div class="vote_count"><?php echo $row["downvotes"] ?></div>
 							</div>
+							<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
 						</div>
 						<div class="idea_image_wrapper">
 							<i class="fa <?php echo $location_categories[$row['category']]['fa-icon'] ?>"></i>

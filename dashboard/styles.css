@@ -320,3 +320,9 @@
     text-align: center;
     padding-bottom: 6px;
 }
+
+@media(max-width: 1750px) {
+    #content #manage .manage-plans .plan {
+        width: 33.3%;
+    }
+}

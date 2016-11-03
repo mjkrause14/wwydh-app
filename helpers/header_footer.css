@@ -6,6 +6,39 @@
     margin: auto;
 }
 
+.upvote.me i {
+    color: #418040 !important;
+}
+
+.downvote.me i {
+    color: red !important;
+}
+
+.vote_count {
+    text-align: center;
+    font-size: 14px;
+}
+
+.upvote .vote_count {
+    color: #418040;
+}
+
+.downvote .vote_count {
+    color: red;
+}
+.vote i.fa-spinner {
+    color: rgba(0, 0, 0, 0.3) !important;
+    font-size: 14px !important;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    cursor: default !important;
+}
+
+.vote i.fa-spinner.open {
+    opacity: 0;
+}
+
 body {
     padding: 0;
     margin: 0;
