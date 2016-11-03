@@ -165,7 +165,7 @@
 									</div>
 								</div>
 								<div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $location["image"] ?>)"></div>
-								<div class="location_address"><?php echo $location["building_address"]." ".$location["city"].", Maryland".$location["zip_code"] ?></div>
+								<div class="location_address"><?php echo $location["building_address"]." ".$location["city"].", Maryland ".$location["zip_code"] ?></div>
 								<div class="location_features"><?php echo $location["features"] ?></div>
 								<div style="clear: both"></div>
 							</div>

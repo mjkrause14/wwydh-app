@@ -170,7 +170,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                                             </div>
                                             <div class="plan_title"><?php echo $p["plan title"] ?></div>
                                             <div class="idea_information">
-                                                <div class="location_address"><?php echo $p["building_address"]." ".$p["city"].", Maryland".$p["zip_code"] ?></div>
+                                                <div class="location_address"><?php echo $p["building_address"]." ".$p["city"].", Maryland ".$p["zip_code"] ?></div>
                                                 <div class="idea_desc"><?php echo $p["description"] ?></div>
                                             </div>
                                         </div>
