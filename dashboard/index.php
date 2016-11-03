@@ -205,7 +205,6 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                         <li>
                             <i class="fa fa-list" aria-hidden="true"></i>
                             Your List
-                            <div class="sidebar_badge">5</div>
                         </li>
                     </ul>
                 </div>
