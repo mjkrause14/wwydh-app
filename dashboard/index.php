@@ -3,6 +3,7 @@
     session_start();
 
     include "../helpers/conn.php";
+    include "../helpers/vars.php";
 
     if (!isset($_SESSION["user"])) {
         // user isn't logged in, redirect
@@ -33,6 +34,25 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
     if ($data["projects lead"] > 0) $rank = "Project Leader";
     else if ($data["projects contributed to"] > 0) $rank = "Contributor";
     else $rank = "Beginner";
+
+    $q = $conn->prepare("SELECT pl.title AS `plan title`, pl.*, l.*, i.* FROM plans pl LEFT JOIN locations l ON l.id = pl.location_id LEFT JOIN ideas i ON i.id = pl.idea_id WHERE pl.creator_id = $id");
+    $q->execute();
+
+    $plans_query = $q->get_result();
+
+    // initialize arrays for plans
+    $plans_ready = [];
+    $plans_not_ready = [];
+    $plans_published = [];
+
+    while ($row = $plans_query->fetch_array(MYSQLI_ASSOC)) {
+        // loop through, sort plans into correct arrays
+        if ($row["published"] == 0) {
+            // if its not published, sort into correct array
+            if (isset($row["idea_id"]) && isset($row["location_id"])) array_push($plans_ready, $row);
+            else array_push($plans_not_ready, $row);
+        } else array_push($plans_published, $row);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -46,8 +66,32 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,600i,700" rel="stylesheet">
         <link href="../helpers/header_footer.css" rel="stylesheet" type="text/css" />
         <link href="styles.css" rel="stylesheet" type="text/css" />
+
+        <?php if (isset($_GET["newplan"])) { ?>
+            <script type="text/javascript">
+                plan = true;
+            </script>
+        <?php } ?>
     </head>
     <body>
+        <div id="new-plan" class="overlay">
+            <div class="wrapper">
+                <div class="overlay_title">New Plan</div>
+                <div class="overlay-inner">
+                    <div class="label">Title</div>
+                    <input type="text" name="plan-title" />
+                    <div class="btn-group">
+                        <div id="create-plan" class="plan-button"
+                        <?php
+                            if (isset($_GET["location"])) echo "data-location='{$_GET['location']}'";
+                            if (isset($_GET["idea"])) echo "data-idea='{$_GET['idea']}'";
+                        ?>
+                        >Create Plan</div>
+                        <div id="cancel-create-plan" class="plan-button">Cancel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="nav">
             <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?>">
                 <a href="../home">
@@ -93,8 +137,8 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
         <div id="wrapper">
             <div id="content">
                 <div class="inner">
-                    <div id="overview" class="pane">
-                        <div id="user_intro">
+                    <div id="overview" class="pane active">
+                        <div id="user_intro" class="content-shadow">
                             <div id="counters">
                                 <div id="points">
                                     <div class="counter_value"><?php echo $data["points"] ?></div>
@@ -113,23 +157,49 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                             <div style="clear: both;"></div>
                         </div>
                     </div>
+                    <div id="manage" class="pane">
+                        <?php if (count($plans_ready) > 0) { ?>
+                        <div id="plans-ready" class="manage-plans content-shadow">
+                            <div class="sub-cat-title">Plans ready for publishing</div>
+                            <div class="plans">
+                                <?php foreach ($plans_ready as $p) { ?>
+                                    <div class="plan">
+                                        <div class="plan-inner">
+                                            <div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $p["image"] ?>)">
+                                                <i class="fa <?php echo $location_categories[$p['category']]['fa-icon'] ?>"></i>
+                                            </div>
+                                            <div class="plan_title"><?php echo $p["plan title"] ?></div>
+                                            <div class="idea_information">
+                                                <div class="location_address"><?php echo $p["building_address"]." ".$p["city"].", Maryland".$p["zip_code"] ?></div>
+                                                <div class="idea_desc"><?php echo $p["description"] ?></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                <div style="clear: both"></div>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </div>
                 </div>
             </div>
             <div id="sidebar">
                 <div class="inner">
                     <ul>
-                        <li class="active"><i class="fa fa-tachometer" aria-hidden="true"></i>Overview</li>
-                        <li>
+                        <li data-target="overview" class="active"><i class="fa fa-tachometer" aria-hidden="true"></i>Overview</li>
+                        <li data-target="inbox">
                             <i class="fa fa-inbox" aria-hidden="true"></i>
                             Inbox
                             <?php if ($data["messages"] > 0) { ?>
                                 <div class="sidebar_badge"><?php echo $data["messages"] ?></div>
                             <?php } ?>
                         </li>
-                        <li>
+                        <li data-target="manage">
                             <i class="fa fa-wrench" aria-hidden="true"></i>
                             Manage
-                            <div class="sidebar_badge">1</div>
+                            <?php if (count($plans_ready) > 0) { ?>
+                                <div class="sidebar_badge"><?php echo count($plans_ready) ?></div>
+                            <?php } ?>
                         </li>
                         <li><i class="fa fa-lightbulb-o" aria-hidden="true"></i>Your Entries</li>
                         <li>

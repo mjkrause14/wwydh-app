@@ -73,7 +73,7 @@
 				<h1>Search Ideas</h1>
 				<form method="POST">
 					<input type="submit" name="simple_search" value="Search"></input>
-					<input name="search" type="text" placeholder="Enter an address, city, zipcode, or user name" />
+					<input name="search" type="text" placeholder="Enter a category or search keywords" />
 				</form>
 			</div>
 		</div>

@@ -5,7 +5,7 @@
     include "../helpers/conn.php";
 
     // BACKEND:0 change homepage location query to ORDER BY RAND() LIMIT 3
-    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT p.id) AS plans, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN plans p ON p.location_id = l.id LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY plans DESC, RAND() LIMIT 4");
+    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT p.id) AS plans, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN plans p ON p.location_id = l.id AND p.published = 1 LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY plans DESC, RAND() LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
@@ -102,7 +102,7 @@
             <div id="welcome">
                 <div class="width">
                     <span id="see-how"><h1>See How it Works!</h1></span>
-                    <div id="locationButton">Submit Location</div>
+                    <!-- <div id="locationButton">Submit Location</div> -->
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
                     foreach($locations as $l) { ?>
                         <div class="location">
                             <div class="btn-group">
-                                <div class="btn newidea"><a href="../ideas/new?location=<?php echo $l["id"] ?>">Make a Plan Here</a></div>
+                                <div class="btn newidea"><a href="../dashboard?newplan&location=<?php echo $l["id"] ?>">Make a Plan Here</a></div>
                                 <?php if ($l["plans"] > 0) { ?> <div class="btn seeideas"><a href="../plans?location=<?php echo $l["id"] ?>">See other Plans here</a></div> <?php } ?>
                                 <div class="btn seelocation"><a href="../locations/propertyInfo.php?id=<?php echo $l["id"] ?>">View full location</a></div>
                             </div>

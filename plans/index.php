@@ -26,7 +26,7 @@
 		LEFT JOIN checklist_items cc ON cc.checklist_id = c.id
 		WHERE cc.contributer_id IS NULL AND i.location_id = {$_GET["location"]} GROUP BY i.id");
 	} else {
-		$q = $conn->prepare("SELECT pl.*, i.*, l.* FROM plans pl LEFT JOIN ideas i ON i.id = pl.idea_id LEFT JOIN locations l ON l.id = pl.location_id ORDER BY i.id");
+		$q = $conn->prepare("SELECT pl.*, i.*, l.*, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM plans pl LEFT JOIN ideas i ON i.id = pl.idea_id LEFT JOIN locations l ON l.id = pl.location_id LEFT JOIN location_features f ON f.location_id = l.id WHERE pl.published = 1 GROUP BY l.id, i.id  ORDER BY i.id");
 	}
 
 	$q->execute();
@@ -104,10 +104,10 @@
 		</div>
 		<div id="splash">
 			<div class="splash_content">
-				<h1>Search Ideas</h1>
+				<h1>Search Plans</h1>
 				<form method="POST">
 					<input type="submit" name="simple_search" value="Search"></input>
-					<input name="search" type="text" placeholder="Enter an address, city, zipcode, or user name" />
+					<input name="search" type="text" placeholder="Enter an address, category, or search keywords" />
 				</form>
 			</div>
 		</div>
@@ -151,6 +151,25 @@
 							<?php } ?>
 							<?php */ ?>
 						</div>
+					</div>
+					<div class="locations">
+						<?php foreach($plan as $location) {
+							if (isset($location["features"])) $location["features"] = implode(" | ", explode("[-]", $location["features"])); ?>
+							<div class="location">
+								<div class="vote">
+									<div class="upvote">
+										<i class="fa fa-thumbs-up" aria-hidden="true"></i>
+									</div>
+									<div class="downvote">
+										<i class="fa fa-thumbs-down" aria-hidden="true"></i>
+									</div>
+								</div>
+								<div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $location["image"] ?>)"></div>
+								<div class="location_address"><?php echo $location["building_address"]." ".$location["city"].", Maryland".$location["zip_code"] ?></div>
+								<div class="location_features"><?php echo $location["features"] ?></div>
+								<div style="clear: both"></div>
+							</div>
+						<?php } ?>
 					</div>
 				</div>
 		 	<?php }

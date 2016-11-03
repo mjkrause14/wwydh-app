@@ -23,7 +23,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>New Idea</title>
+        <title>New Plan</title>
 		<link href="../../helpers/header_footer.css" type="text/css" rel="stylesheet" />
 		<link href="../helpers/splash.css" type="text/css" rel="stylesheet" />
 		<link href="styles.css" type="text/css" rel="stylesheet" />
@@ -32,6 +32,7 @@
         <script src="scripts.js" type="text/javascript"></script>
     </head>
     <body>
+        <div class="bg"></div>
         <div class="width">
             <div id="nav">
 	            <div class="nav-inner width">
@@ -48,8 +49,8 @@
 	                <div id="main_nav" class="nav">
 	                    <ul>
 	                        <a href="../../locations"><li>Locations</li></a>
-	                        <a href=".." class="active"><li>Ideas</li></a>
-	                        <a href="../../plans"><li>Plans</li></a>
+	                        <a href="../../ideas"><li>Ideas</li></a>
+	                        <a href="../" class="active"><li>Plans</li></a>
 	                        <a href="../../projects"><li>Projects</li></a>
 	                    </ul>
 	                </div>
