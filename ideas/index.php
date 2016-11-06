@@ -28,9 +28,9 @@
 		LEFT JOIN checklist_items cc ON cc.checklist_id = c.id
 		WHERE cc.contributer_id IS NULL AND i.location_id = {$_GET["location"]} GROUP BY i.id");
 	} else {
-		$q = $conn->prepare("SELECT i.*, COUNT(up_i.id) AS `upvotes`, COUNT(down_i.id) AS `downvotes`, (COUNT(up_i.id) - COUNT(down_i.id)) AS `vote coef`, COUNT(up_i_u.id) AS `upvoted`, COUNT(down_i_u.id) AS `downvoted` FROM ideas i LEFT JOIN
-		upvotes_ideas up_i ON up_i.idea_id = i.id LEFT JOIN downvotes_ideas down_i ON down_i.idea_id = i.id LEFT JOIN upvotes_ideas
-		up_i_u ON up_i_u.user_id = $id AND up_i_u.idea_id = i.id LEFT JOIN downvotes_ideas down_i_u ON down_i_u.user_id = $id AND down_i_u.idea_id = i.id GROUP BY i.id ORDER BY `vote coef` DESC LIMIT $itemCount OFFSET $offset");
+		$q = $conn->prepare("SELECT i.*,
+			(SELECT COUNT(up_i.id) FROM upvotes_ideas up_i WHERE up_i.idea_id = i.id) AS `upvotes`,
+			(SELECT COUNT(up_i_u.id) FROM upvotes_ideas up_i_u WHERE up_i_u.user_id = $id AND up_i_u.idea_id = i.id) AS `upvoted`, COUNT(pl.id) AS `plans` FROM ideas i LEFT JOIN plans pl ON pl.idea_id = i.id GROUP BY i.id ORDER BY `upvotes` DESC LIMIT $itemCount OFFSET $offset");
 	}
 
 	$q->execute();
@@ -51,6 +51,24 @@
 	</head>
 	<body>
 		<div class="width">
+			<div id="new-plan" class="overlay">
+	            <div class="wrapper">
+	                <div class="overlay_title">New Plan</div>
+	                <div class="overlay-inner">
+	                    <div class="label">Title</div>
+	                    <input type="text" name="plan-title" />
+	                    <div class="btn-group">
+	                        <div id="create-plan" class="plan-button"
+	                        <?php
+	                            if (isset($_GET["location"])) echo "data-location='{$_GET['location']}'";
+	                            if (isset($_GET["idea"])) echo "data-idea='{$_GET['idea']}'";
+	                        ?>
+	                        >Create Plan</div>
+	                        <div id="cancel-create-plan" class="plan-button">Cancel</div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
 			<div id="nav">
 	            <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?>">
 	                <a href="../home">
@@ -109,9 +127,14 @@
 				if (isset($row["checklist"])) $row["checklist"] = explode("[-]", $row["checklist"]); ?>
 
 				<div class="idea
-				<?php if (isset($row["owner"])) echo "mine" ?>"
+				<?php if (isset($row["owner"]) && $row["owner"] == $_SESSION["user"]["id"]) echo "mine" ?>"
 				data-idea="<?php echo $row["id"] ?>">
 					<div class="grid-item width">
+						<div class="options btn-group">
+							<div class="btn op-1"><a href="../dashboard?newplan&location=<?php echo $row["id"] ?>">Make a Plan Here</a></div>
+							<?php if ($row["plans"] > 0) { ?> <div class="btn op-2"><a href="../plans?location=<?php echo $row["id"] ?>">See other Plans here</a></div> <?php } ?>
+							<div class="btn op-3"><a href="../locations/propertyInfo.php?id=<?php echo $row["id"] ?>">View full location</a></div>
+						</div>
 						<div class="vote">
 							<div class="upvote <?php if ($row["upvoted"] == 1) echo "me"; ?>">
 								<div class="vote_count"><?php echo $row["upvotes"] ?></div>
@@ -124,6 +147,9 @@
 							<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
 						</div>
 						<div class="idea_image_wrapper">
+							<?php if (isset($row["owner"]) && $row["owner"] == $_SESSION["user"]["id"]) { ?>
+								<div class="corner-ribbon idea-mine">mine</div>
+							<?php } ?>
 							<i class="fa <?php echo $location_categories[$row['category']]['fa-icon'] ?>"></i>
 							<div class="overlay"></div>
 							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $location_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
