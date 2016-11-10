@@ -37,7 +37,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 10;
     position: relative;
 }
 
@@ -410,6 +409,10 @@ ul.tab li {
     content: "\f0c9";
 }
 
+.sidenav a {
+    text-decoration: none;
+}
+
 .sidenav {
     height: 298px;
     width: 300px;
@@ -441,6 +444,7 @@ ul.tab li {
     text-transform: uppercase;
     font-weight: lighter;
     text-align: left;
+    box-shadow: inset 0px -1px 5px 1px rgba(0,0,0,0.1);
 }
 
 .side-button:hover {
@@ -448,19 +452,19 @@ ul.tab li {
 }
 
 #sideIdea {
-    background-color: #1C95FF;
+    background-color: #418040;
 }
 
 #sideLocation {
-    background-color: #FA9E25;
+    background-color: #4D8C4C;
 }
 
 #sideHelp {
-    background-color: #DB2525;
+    background-color: #559454;
 }
 
 #sideContact {
-    background-color: #CF04CF;
+    background-color: #609E5F;
 }
 
 .sidenav a:hover, .offcanvas a:focus{

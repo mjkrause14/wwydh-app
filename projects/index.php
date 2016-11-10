@@ -132,7 +132,7 @@ echo "<table width=1>";
 	$total = $q->get_result()->fetch_array(MYSQLI_ASSOC)["total"];
 	$offset = $itemCount * ($page - 1);
 
-	// BACKEND: change locations search code to prepared statements to prevent SQL injection
+	// BACKEND:30 change locations search code to prepared statements to prevent SQL injection
 	if ($_GET["isSearch"]) {
 		$theQuery = "SELECT * FROM `locations` WHERE `building_address` LIKE '%{$_GET["sAddress"]}%' AND `building_address` LIKE '%{$_GET["sAddress"]}%' AND `block` LIKE '%{$_GET["sBlock"]}%' AND `lot` LIKE '%{$_GET["sLot"]}%' AND `zip_code` LIKE '%{$_GET["sZip"]}%' AND `city` LIKE '%{$_GET["sCity"]}%' AND `neighborhood` LIKE '%{$_GET["sNeighborhood"]}%' AND `police_district` LIKE '%{$_GET["sPoliceDistrict"]}%' AND `council_district` LIKE '%{$_GET["sCouncilDistrict"]}%' AND `longitude` LIKE '%{$_GET["sLongitude"]}%' AND `latitude` LIKE '%{$_GET["sLatitude"]}%' AND `owner` LIKE '%{$_GET["sOwner"]}%' AND `use` LIKE '%{$_GET["sUse"]}%' AND `mailing_address` LIKE '%{$_GET["sMailingAddr"]}%'";
 	} else {
@@ -155,27 +155,27 @@ echo "<table width=1>";
 	<body>
 		<div class="width">
 			<div id="nav">
-				<div class="nav-inner width">
-					<a href="../home">
-						<div id="logo"></div>
-						<div id="logo_name">What Would You Do Here?</div>
-					</a>
-					<div id="user_nav" class="nav">
-						<ul>
-							<a href="#"><li>Log in</li></a>
-							<a href="#"><li>Sign up</li></a>
-						</ul>
-					</div>
-					<div id="main_nav" class="nav">
-						<ul>
-							<a href="../locations"><li>Locations</li></a>
-							<a href="../ideas"><li>Ideas</li></a>
-							<a href="../projects" class="active"><li>Projects</li></a>
-							<a href="../contact"><li>Contact</li></a>
-						</ul>
-					</div>
-				</div>
-			</div>
+	            <div class="nav-inner width">
+	                <a href="../home">
+	                    <div id="logo"></div>
+	                    <div id="logo_name">What Would You Do Here?</div>
+	                <div id="user_nav" class="nav">
+	                    <ul>
+	                        <a href="#"><li>Log in</li></a>
+	                        <a href="#"><li>Sign up</li></a>
+	                        <a href="../contact"><li>Contact</li></a>
+	                    </ul>
+	                </div>
+	                <div id="main_nav" class="nav">
+	                    <ul>
+	                        <a href="../locations"><li>Locations</li></a>
+	                        <a href="../ideas"><li>Ideas</li></a>
+	                        <a href="../plans"><li>Plans</li></a>
+	                        <a href="../projects" class="active"><li>Projects</li></a>
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
 		</div>
 		<div id="splash">
 			<div class="splash_content">

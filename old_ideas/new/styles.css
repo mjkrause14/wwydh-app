@@ -18,7 +18,7 @@ body {
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scroll: touch;
-    min-height: 670px;
+    min-height: 650px;
 }
 
 .pane {
@@ -87,7 +87,7 @@ body {
 
 .pane .button {
     width: 50%;
-    padding: 9px;
+    padding: 10px;
     height: 100%;
     height: inherit;
     float: left;
@@ -96,13 +96,13 @@ body {
     border-radius: 2px 0px 0px 2px;
     position: relative;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 18px;
     box-sizing: border-box;
     text-align: center;
     transition: all 0.2s ease;
 }
 
-.pane .button[data-leader="0"] {
+.pane .button[data-leader="1"] {
     border-radius: 0px 2px 2px 0px;
 }
 
@@ -140,16 +140,6 @@ body {
     outline: 0;
     transition: all 0.2s ease;
     -webkit-user-select: auto;
-}
-
-.pane select {
-    width: 100%;
-    -webkit-appearance: none;
-    font-size: 14px;
-    padding: 10px;
-    border-radius: 1px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
 }
 
 .pane textarea {
@@ -204,7 +194,7 @@ body {
     content: "\f00c";
 }
 
-.pane .success-marker, .pane .login-marker {
+.pane .success-marker {
     background: #418040;
     width: 150px;
     height: 150px;
@@ -214,17 +204,7 @@ body {
     color: white;
 }
 
-.pane .login-marker {
-    background: #B0331A;
-}
-
-.pane .login-marker i {
-    color: rgba(255, 255, 255, 0.6);
-    text-align: center;
-    height: 120px;
-}
-
-.pane .success-marker i, .pane .login-marker i {
+.pane .success-marker i {
     font-size: 100px;
     position: absolute;
     width: 100px;
@@ -234,31 +214,6 @@ body {
     right: 0;
     top: 0;
     bottom: 0;
-}
-
-.pane .login {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.pane .login input {
-    max-width: 400px;
-    margin: auto;
-    margin-bottom: 15px;
-}
-
-.pane .login input[type="submit"] {
-    background: #418040;
-    -webkit-appearance: none;
-    color: white;
-    border-radius: 2px;
-    transition: opacity 0.15s ease;
-    -webkit-font-smoothing: subpixel-antialiased;
-    cursor: pointer;
-}
-
-.pane .login input[type="submit"]:hover {
-    opacity: 0.85;
 }
 
 .pane.active {

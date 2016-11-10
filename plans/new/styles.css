@@ -1,7 +1,14 @@
-body {
-    background: url(../../images/baltimore_bg.jpg);
-    background-position: cover;
+.bg {
+    background: url(../../images/plan_bg.png);
+    background-position: center;
     background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .outside {

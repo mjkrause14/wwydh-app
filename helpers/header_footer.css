@@ -1,9 +1,42 @@
 /* Globals - The title is misleading xD */
 
 .width {
-    max-width: 1600px;
+    /* max-width: 1600px; */
     padding: 0px 15px;
     margin: auto;
+}
+
+.upvote.me i {
+    color: #418040 !important;
+}
+
+.downvote.me i {
+    color: red !important;
+}
+
+.vote_count {
+    text-align: center;
+    font-size: 14px;
+}
+
+.upvote .vote_count {
+    color: #418040;
+}
+
+.downvote .vote_count {
+    color: red;
+}
+.vote i.fa-spinner {
+    color: rgba(0, 0, 0, 0.3) !important;
+    font-size: 14px !important;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    cursor: default !important;
+}
+
+.vote i.fa-spinner.open {
+    opacity: 0;
 }
 
 body {
@@ -18,15 +51,27 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    overflow: hidden;
     padding: 5px 0;
     width: 100%;
     z-index: 10;
     box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.3);
 }
 
-.nav-inner {
-    overflow: hidden;
+#main_nav {
+    position: absolute;
+    margin: auto;
+    left: 0; right: 0;
+}
+
+.loggedin.nav-inner {
+    padding-bottom: 5px;
+}
+
+.clearfix:after {
+   content: " ";
+   display: block;
+   height: 0;
+   clear: both;
 }
 
 #nav #logo {
@@ -90,6 +135,83 @@ body {
     width: 200px;
     float: right;
     text-align: right;
+}
+
+#user_nav .loggedin {
+    position: relative;
+    float: right;
+}
+
+#user_nav .loggedin .click-space {
+    cursor: pointer;
+    float: right;
+}
+
+#user_nav .loggedin.down .chevron {
+    transform: rotateZ(180deg);
+}
+
+#user_nav .chevron {
+    color: #939393;
+    float: right;
+    margin-top: 16px;
+    margin-left: 10px;
+    transition: transform 0.2s ease;
+    transform: rotateZ(0deg);
+}
+
+#user_nav .loggedin .greet {
+    float: right;
+    color: #939393;
+    margin-right: 10px;
+    margin-top: 17px;
+}
+
+#user_nav .loggedin .image {
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    float: right;
+    margin-top: 8px;
+}
+
+#user_nav #nav_submenu {
+    visibility: hidden;
+    padding: 8px;
+    background: white;
+    border-radius: 2px;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    min-width: 180px;
+    box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+    z-index: 9;
+}
+
+#user_nav #nav_submenu ul {
+    margin: 0;
+}
+
+#user_nav .loggedin.down #nav_submenu {
+    top: 60px;
+    opacity: 1;
+    visibility: visible;
+}
+
+#user_nav .loggedin #nav_submenu li {
+    width: 100%;
+    padding: 10px 0px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#user_nav .loggedin.down #nav_submenu a:last-child li {
+    text-align: left;
+    border-bottom: 1px solid transparent;
 }
 
 #footer {
