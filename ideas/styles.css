@@ -9,7 +9,6 @@
 
 .idea {
     width: 100%;
-    overflow: hidden;
     padding: 5px;
     box-sizing: border-box;
     position: relative;
@@ -19,7 +18,7 @@
 }
 
 .idea:first-child {
-    padding-top: 5px;
+    /* padding-top: 5px; */
 }
 
 .idea:last-child {
@@ -38,7 +37,7 @@
 .idea .vote i {
     font-size: 20px;
     cursor: pointer;
-    color: #939393;
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .idea_image_wrapper {

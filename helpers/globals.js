@@ -1,6 +1,7 @@
-jQuery(document).ready(function($) {
-    var submenu = false
+var submenu = false;
+var add_to_plan = false;
 
+jQuery(document).ready(function($) {
     $("#user_nav .loggedin .click-space").click(function() {
         $("#user_nav .loggedin").toggleClass("down");
         submenu = !submenu;
@@ -20,6 +21,11 @@ jQuery(document).ready(function($) {
         if (!$(e.target).parents(".loggedin").length && submenu) {
             $("#user_nav .loggedin").removeClass("down");
             submenu = false;
+        }
+
+        if (!($(e.target).parents(".add-to-plan").length || $(e.target).parents(".plan-buttons").length) && add_to_plan) {
+            $(".add-to-plan").removeClass("down");
+            add_to_plan = false;
         }
     });
 })
