@@ -52,9 +52,28 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="../helpers/globals.js" type="text/javascript"></script>
 		<script src="scripts.js" type="text/javascript"></script>
+
+		<?php if (isset($_SESSION["message"])) { ?>
+			<script type="text/javascript">
+				setTimeout(function() {
+					$(".notification").addClass("visible");
+
+					setTimeout(function() {
+						$(".notification").removeClass("visible");
+					}, 4000);
+				}, 600);
+			</script>
+		<?php } ?>
 	</head>
 	<body>
 		<div class="width">
+			<?php if (isset($_SESSION["message"])) { ?>
+				<div class="notification <?php echo $_SESSION["message"][0] ?>">
+					<span><?php echo $_SESSION["message"][1] ?></span>
+				</div>
+				<?php
+				unset($_SESSION["message"]);
+			} ?>
 			<div id="nav">
 	            <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?>">
 	                <a href="../home">
@@ -135,7 +154,7 @@
 								<?php if (isset($plans)) {
 									 foreach ($plans as $p)  { ?>
 										<?php if ($p["has idea"] == "false") { ?>
-											<li><?php echo $p["title"] ?></li>
+											<li class="existing" data-plan="<?php echo $p["id"] ?>"><?php echo $p["title"] ?></li>
 										<?php } ?>
 								<?php }
 								} ?>

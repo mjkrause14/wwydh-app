@@ -1,4 +1,5 @@
 var voting = false;
+var submitting = false;
 
 jQuery(document).ready(function($) {
     $(".op-1").click(function() {
@@ -14,6 +15,35 @@ jQuery(document).ready(function($) {
 
     $(".add-to-plan li.create span").click(function() {
         $(this).siblings(".plan-title").toggleClass("active");
+    });
+
+    $(".add-to-plan form").submit(function(e) {
+        // on form submit ** THIS IS ONLY FOR CREATING A NEW PLAN AND ADDING idea TO IT
+        e.preventDefault();
+        if (!submitting) {
+            submitting = true;
+
+            var idea = $(this).parents(".idea").data("idea");
+            var plan_name = $("[name=plan-title]", this).val();
+
+            if (plan_name.length > 0) {
+                $.post("../helpers/plans/new.php", {idea: idea, title: plan_name}, function(response) {
+                    location.reload();
+                });
+            } else {
+                $("[name=plan-title]", this).addClass("error");
+            }
+        }
+    });
+
+    $(".add-to-plan li.existing").click(function() {
+        // ADDS idea TO EXISTING PLAN
+        var idea = $(this).parents(".idea").data("idea");
+        var plan = $(this).data("plan");
+
+        $.post("../helpers/plans/addIdea.php", {idea: idea, plan: plan}, function(response) {
+            location.reload();
+        })
     })
 
     $(".upvote").on("click", function() {

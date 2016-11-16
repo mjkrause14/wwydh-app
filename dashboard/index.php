@@ -159,8 +159,8 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                     </div>
                     <div id="manage" class="pane">
                         <?php if (count($plans_ready) > 0) { ?>
+                        <div class="sub-cat-title">Plans ready for publishing</div>
                         <div id="plans-ready" class="manage-plans content-shadow">
-                            <div class="sub-cat-title">Plans ready for publishing</div>
                             <div class="plans">
                                 <?php foreach ($plans_ready as $p) { ?>
                                     <div class="plan">
