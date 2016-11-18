@@ -43,7 +43,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>All Ideas</title>
+		<title>All Test</title>
 		<link href="../helpers/header_footer.css" type="text/css" rel="stylesheet" />
 		<link href="../helpers/splash.css" type="text/css" rel="stylesheet" />
 		<link href="styles.css" type="text/css" rel="stylesheet" />
