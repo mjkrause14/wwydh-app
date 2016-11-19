@@ -18,18 +18,31 @@
 
 	$id = isset($_SESSION["user"]["id"]) ? $_SESSION["user"]["id"] : 0;
 
+	// set the $_GET variables to appended to links that reload this page
+	$urlExtras = "?";
+	if (isset($_GET["page"])) $urlExtras += "page=".$_GET["page"]."&";
+	if (isset($_GET["sort"])) $urlExtras += "sort=".$_GET["sort"]."&";
+
 	// BACKEND:10 change locations search code to prepared statements to prevent SQL injection
 	if (isset($_GET["isSearch"])) {
 		$theQuery = "SELECT * FROM `locations` WHERE `building_address` LIKE '%{$_GET["sAddress"]}%' AND `building_address` LIKE '%{$_GET["sAddress"]}%' AND `block` LIKE '%{$_GET["sBlock"]}%' AND `lot` LIKE '%{$_GET["sLot"]}%' AND `zip_code` LIKE '%{$_GET["sZip"]}%' AND `city` LIKE '%{$_GET["sCity"]}%' AND `neighborhood` LIKE '%{$_GET["sNeighborhood"]}%' AND `police_district` LIKE '%{$_GET["sPoliceDistrict"]}%' AND `council_district` LIKE '%{$_GET["sCouncilDistrict"]}%' AND `longitude` LIKE '%{$_GET["sLongitude"]}%' AND `latitude` LIKE '%{$_GET["sLatitude"]}%' AND `owner` LIKE '%{$_GET["sOwner"]}%' AND `use` LIKE '%{$_GET["sUse"]}%' AND `mailing_address` LIKE '%{$_GET["sMailingAddr"]}%'";
 	} else {
+		if (isset($_GET["sort"]) && $_GET["sort"] == "upvotes-asc") $sort = "`upvotes` ASC";
+		elseif (isset($_GET["sort"]) && $_GET["sort"] == "date-desc") $sort = "`timestamp` DESC";
+		elseif (isset($_GET["sort"]) && $_GET["sort"] == "date-asc") $sort = "`timestamp` ASC";
+		// dafault case
+		else $sort = "`upvotes` DESC";
+
 		$q = $conn->prepare("SELECT i.*,
 			(SELECT COUNT(up_i.id) FROM upvotes_ideas up_i WHERE up_i.idea_id = i.id) AS `upvotes`,
-			(SELECT COUNT(up_i_u.id) FROM upvotes_ideas up_i_u WHERE up_i_u.user_id = $id AND up_i_u.idea_id = i.id) AS `upvoted`, COUNT(pl.id) AS `plans` FROM ideas i LEFT JOIN plans pl ON pl.idea_id = i.id GROUP BY i.id ORDER BY `upvotes` DESC LIMIT $itemCount OFFSET $offset");
+			(SELECT COUNT(up_i_u.id) FROM upvotes_ideas up_i_u WHERE up_i_u.user_id = $id AND up_i_u.idea_id = i.id) AS `upvoted`,
+			COUNT(pl.id) AS `plans` FROM ideas i LEFT JOIN plans pl ON pl.idea_id = i.id GROUP BY i.id ORDER BY $sort LIMIT $itemCount OFFSET $offset");
 	}
 
 	$q->execute();
 	$data = $q->get_result();
 
+	// if user is logged in, get users plans and identify whether or not they have an idea attached to them
 	if (isset($_SESSION["user"])) {
 		$q = $conn->prepare("SELECT pl.*, IF(COUNT(i.id) > 0, 'true', 'false') AS `has idea` FROM plans pl LEFT JOIN ideas i ON pl.idea_id = i.id WHERE pl.creator_id = {$_SESSION["user"]["id"]} AND pl.published = 0 GROUP BY pl.id");
 		$q->execute();
@@ -43,7 +56,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>All Test</title>
+		<title>All Ideas</title>
 		<link href="../helpers/header_footer.css" type="text/css" rel="stylesheet" />
 		<link href="../helpers/splash.css" type="text/css" rel="stylesheet" />
 		<link href="styles.css" type="text/css" rel="stylesheet" />
@@ -127,6 +140,28 @@
 			</div>
 		</div>
 		<div class="grid-inner width">
+			<div id="toolbar">
+				<div id="item-count">
+					Showing <span><?php echo $offset + 1 ?></span> -
+					<span><?php echo ($total - $offset > $itemCount) ? $itemCount : $total ?></span> of <?php echo $total ?>
+				</div>
+				<div id="sort">
+					<span>Sort by</span>
+					<select>
+						<option value="default" selected>Upvotes: High to Low</option>
+						<option value="upvotes-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "upvotes-asc") echo "selected" ?>
+						>Upvotes: Low to High</option>
+						<option value="date-desc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-desc") echo "selected" ?>
+						>Date: Newest to Oldest</option>
+						<option value="date-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-asc") echo "selected" ?>
+						>Date: Oldest to Newest</option>
+					</select>
+				</div>
+				<div style="clear: both"></div>
+			</div>
 			<?php
 			while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
 				if (isset($row["checklist"])) $row["checklist"] = explode("[-]", $row["checklist"]); ?>
@@ -175,13 +210,14 @@
 							<?php if (isset($row["owner"]) && isset($_SESSION["user"]) && $row["owner"] == $_SESSION["user"]["id"]) { ?>
 								<div class="corner-ribbon idea-mine">mine</div>
 							<?php } ?>
-							<i class="fa <?php echo $location_categories[$row['category']]['fa-icon'] ?>"></i>
+							<i class="fa <?php echo $idea_categories[$row['category']]['fa-icon'] ?>"></i>
 							<div class="overlay"></div>
-							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $location_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
+							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $idea_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
 						</div>
 						<div class="idea_desc">
 							<div class="title"><?php echo $row["title"] ?></div>
-							<div class="category"><?php echo $location_categories[$row['category']]["title"] ?></div>
+							<div class="post_date">Posted on:  <span><?php echo date("F j, Y", strtotime($row["timestamp"])) ?></span></div>
+							<div class="category">Category: <span><?php echo $idea_categories[$row['category']]["title"] ?></span></div>
 							<div class="description"><?php echo $row["description"] ?></div>
 							<?php /* ?>
 							<?php if (count($row["checklist"]) > 0) { ?>
@@ -208,12 +244,16 @@
 			<div class="grid-inner">
 				<ul>
 				<?php
+					// appends other $_GET variables to the url before following it
+					$urlExtras = "?";
+					if (isset($_GET["sort"])) $urlExtras .= "sort=".$_GET["sort"]."&";
+
 					$starting_page = ($page - 5 > 0) ? $page - 5 : 1;
 					$ending_page = ($page + 5 < ceil($total / $itemCount)) ? $page + 5 : ceil($total / $itemCount);
 
 					for ($i = 0; $i <= 10 && $starting_page + $i <= $ending_page; $i++) { ?>
 						<li><a <?php echo ($page == $starting_page + $i) ? 'class="active"' : "" ?>
-							href="?page=<?php echo $starting_page + $i ?>"><?php echo $starting_page + $i ?></a>
+							href="<?php echo $urlExtras ?>page=<?php echo $starting_page + $i ?>"><?php echo $starting_page + $i ?></a>
 						</li>
 				<?php } ?>
 				</ul>

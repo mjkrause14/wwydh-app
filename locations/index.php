@@ -93,6 +93,28 @@
 			</div>
 		</div>
 		<div class="grid-inner width">
+			<div id="toolbar">
+				<div id="item-count">
+					Showing <span><?php echo $offset + 1 ?></span> -
+					<span><?php echo ($total - $offset > $itemCount) ? $itemCount : $total ?></span> of <?php echo $total ?>
+				</div>
+				<div id="sort">
+					<span>Sort by</span>
+					<select>
+						<option value="default" selected>Upvotes: High to Low</option>
+						<option value="upvotes-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "upvotes-asc") echo "selected" ?>
+						>Upvotes: Low to High</option>
+						<option value="date-desc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-desc") echo "selected" ?>
+						>Date: Newest to Oldest</option>
+						<option value="date-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-asc") echo "selected" ?>
+						>Date: Oldest to Newest</option>
+					</select>
+				</div>
+				<div style="clear: both"></div>
+			</div>
 			<?php
 			while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
 				if (isset($row["features"])) $row["features"] = implode(" | ", explode("[-]", $row["features"])); ?>

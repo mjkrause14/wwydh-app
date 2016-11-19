@@ -166,7 +166,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                                     <div class="plan">
                                         <div class="plan-inner">
                                             <div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $p["image"] ?>)">
-                                                <i class="fa <?php echo $location_categories[$p['category']]['fa-icon'] ?>"></i>
+                                                <i class="fa <?php echo $idea_categories[$p['category']]['fa-icon'] ?>"></i>
                                             </div>
                                             <div class="plan_title"><?php echo $p["plan title"] ?></div>
                                             <div class="idea_information">

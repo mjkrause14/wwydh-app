@@ -28,4 +28,9 @@ jQuery(document).ready(function($) {
             add_to_plan = false;
         }
     });
+
+    // change sorting
+    $("#toolbar #sort select").on("change", function() {
+        window.location.href = "?sort=" + $(this).val();
+    })
 })
