@@ -34,6 +34,30 @@
     display: none;
 }
 
+/* New Of Type Buttons */
+.new-of-type {
+    color: white;
+    background: #418040;
+    border-radius: 3px;
+    padding: 12px 21px;
+    position: absolute;
+    bottom: 25px;
+    right: 15px;
+    font-size: 16px;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.new-of-type:hover {
+    opacity: 0.85;
+}
+
+.new-of-type i {
+    margin-left: 5px;
+}
+
 /* Collection View Toolbar Styles */
 #toolbar {
     width: 100%;

@@ -138,6 +138,10 @@
 					<input name="search" type="text" placeholder="Enter a category or search keywords" />
 				</form>
 			</div>
+			<div class="new-of-type">
+				New Idea
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</div>
 		</div>
 		<div class="grid-inner width">
 			<div id="toolbar">

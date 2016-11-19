@@ -98,7 +98,7 @@
                         <label>Category</label>
                         <select name="category">
                             <option disabled selected>Choose one...</option>
-                            <?php foreach ($location_categories as $key => $lc) { ?>
+                            <?php foreach ($idea_categories as $key => $lc) { ?>
                                 <option value="<?php echo $key ?>"><?php echo $lc["title"] ?></option>
                             <?php } ?>
 

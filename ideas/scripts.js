@@ -2,6 +2,7 @@ var voting = false;
 var submitting = false;
 
 jQuery(document).ready(function($) {
+    // drop down for new plan
     $(".op-1").click(function() {
         var hasDown = $(this).parents(".btn-group").siblings(".add-to-plan").hasClass("down");
         $(".add-to-plan").removeClass("down");
@@ -13,10 +14,12 @@ jQuery(document).ready(function($) {
         }
     });
 
+    // drop down for plan title
     $(".add-to-plan li.create span").click(function() {
         $(this).siblings(".plan-title").toggleClass("active");
     });
 
+    // capture new plan form submit and ajax that shit
     $(".add-to-plan form").submit(function(e) {
         // on form submit ** THIS IS ONLY FOR CREATING A NEW PLAN AND ADDING idea TO IT
         e.preventDefault();

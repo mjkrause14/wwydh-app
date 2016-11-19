@@ -91,6 +91,10 @@
 					<input name="search" type="text" placeholder="Enter an address, city, zipcode, or feature" />
 				</form>
 			</div>
+			<div class="new-of-type">
+				New Location
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</div>
 		</div>
 		<div class="grid-inner width">
 			<div id="toolbar">

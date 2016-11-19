@@ -2,6 +2,11 @@ var submenu = false;
 var add_to_plan = false;
 
 jQuery(document).ready(function($) {
+    // new-of-type button
+    $(".new-of-type").on("click", function() {
+        window.location.href = "new";
+    })
+
     $("#user_nav .loggedin .click-space").click(function() {
         $("#user_nav .loggedin").toggleClass("down");
         submenu = !submenu;
