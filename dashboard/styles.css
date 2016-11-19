@@ -251,13 +251,6 @@
   text-align: center;
 }
 
-#content #manage .manage-plans {
-    border-radius: 3px;
-    padding: 10px;
-    background: white;
-
-}
-
 #content #manage .sub-cat-title {
     color: #5C5C5C;
     font-weight: 600;
@@ -266,20 +259,18 @@
 }
 
 #content #manage .manage-plans .plan {
-    width: 25%;
-    padding: 10px;
+    width: 100%;
     box-sizing: border-box;
     float: left;
+    border-radius: 3px;
+    margin-bottom: 20px;
 }
 
 #content #manage .manage-plans .plan-inner {
-    height: 400px;
     width: 100%;
-    padding: 5px;
-    border-radius: 2px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    padding: 10px;
     box-sizing: border-box;
-    float: left;
+
 }
 
 #content #manage .manage-plans .plan:first-child {
@@ -290,15 +281,16 @@
     background-size: cover;
     background-position: center;
     height: 200px;
-    width: 100%;
+    width: 250px;
     position: relative;
     border-radius: 2px;
+    float: left;
+    margin-right: 20px;
 }
 
 #content #manage .manage-plans .plan .plan_title {
     font-weight: 700;
     color: #418040;
-    text-align: center;
     padding: 10px 0 0;
     text-transform: uppercase;
 }
@@ -317,12 +309,5 @@
 #content #manage .manage-plans .plan .location_address {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.4);
-    text-align: center;
     padding-bottom: 6px;
-}
-
-@media(max-width: 1750px) {
-    #content #manage .manage-plans .plan {
-        width: 33.3%;
-    }
 }

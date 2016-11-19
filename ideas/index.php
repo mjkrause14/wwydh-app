@@ -216,7 +216,7 @@
 							<?php } ?>
 							<i class="fa <?php echo $idea_categories[$row['category']]['fa-icon'] ?>"></i>
 							<div class="overlay"></div>
-							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $idea_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
+							<div class="idea_image" style="background-image: url(../helpers/idea_images/<?php if (isset($row['image'])) echo $row['image']; else echo "no_image.jpg";?>);"></div>
 						</div>
 						<div class="idea_desc">
 							<div class="title"><?php echo $row["title"] ?></div>

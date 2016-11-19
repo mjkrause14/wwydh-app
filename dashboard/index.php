@@ -160,10 +160,10 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                     <div id="manage" class="pane">
                         <?php if (count($plans_ready) > 0) { ?>
                         <div class="sub-cat-title">Plans ready for publishing</div>
-                        <div id="plans-ready" class="manage-plans content-shadow">
+                        <div id="plans-ready" class="manage-plans">
                             <div class="plans">
                                 <?php foreach ($plans_ready as $p) { ?>
-                                    <div class="plan">
+                                    <div class="plan content-shadow">
                                         <div class="plan-inner">
                                             <div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $p["image"] ?>)">
                                                 <i class="fa <?php echo $idea_categories[$p['category']]['fa-icon'] ?>"></i>
@@ -173,6 +173,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                                                 <div class="location_address"><?php echo $p["building_address"]." ".$p["city"].", Maryland ".$p["zip_code"] ?></div>
                                                 <div class="idea_desc"><?php echo $p["description"] ?></div>
                                             </div>
+                                            <div style="clear: both;"></div>
                                         </div>
                                     </div>
                                 <?php } ?>
