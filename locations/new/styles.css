@@ -37,8 +37,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 10;
-    position: relative;
 }
 
 #welcome h1 {
@@ -390,92 +388,51 @@ ul.tab li {
     color: #a7a7a7;
 }
 
-.sidebar-view {
-    height: 40px;
+#addLocForm
+{
+	text-align: center;
 }
 
-.sidebar-view:before {
-    content: "\f00d";
-    font-family: "FontAwesome";
-    color: rgba(0, 0, 0, 0.5);
-    padding: 5px;
-    font-size: 30px;
-    float: right;
-    position: relative;
-    cursor: pointer;
-    z-index: 10;
+.addLocFormInput
+{
+	margin-bottom: 1em;
 }
 
-.sidebar-view.hidden:before {
-    content: "\f0c9";
+.addLocColumn
+{
+	float: left;
 }
 
-.sidenav {
-    height: 298px;
-    width: 300px;
-    position: absolute;
-    z-index: 9;
-    top: 0;
-    bottom:0;
-    margin: auto;
-    left: -300px;
+.addLocColumnR
+{
+	float: right;
+}
+
+.duplicatePreview
+{
+	margin-left: 10px;
+	width: 120px;
+	height: 120px;
+	float: left;
+	background-size: 120px 120px;
+}
+
+#confirmAddButton {
     background-color: white;
-    box-sizing: border-box;
-    opacity: 0;
-    transition: all 0.3s ease;
-    background: transparent;
-}
-
-.sidenav.open {
-    opacity: 1;
-    left: 0;
-}
-
-.side-button {
-    padding: 25px;
-    font-size: 18px;
-    color: white;
-    display: block;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    color: #418040;
+    border: 2px solid #418040;
+    font-family: "Open Sans";
+    float: right;
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 13px;
+    position: relative;
     text-transform: uppercase;
-    font-weight: lighter;
-    text-align: left;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    -webkit-font-smoothing: subpixel-antialiased;
 }
 
-.side-button:hover {
-    padding-left: 35px;
-}
-
-#sideIdea {
-    background-color: #1C95FF;
-}
-
-#sideLocation {
-    background-color: #FA9E25;
-}
-
-#sideHelp {
-    background-color: #DB2525;
-}
-
-#sideContact {
-    background-color: #CF04CF;
-}
-
-.sidenav a:hover, .offcanvas a:focus{
-    color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-
-@media screen and (max-height: 450px) {
-      .sidenav {padding-top: 15px;}
-      .sidenav a {font-size: 18px;}
+#confirmAddButton:hover {
+    opacity: 0.9;
 }

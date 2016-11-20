@@ -1,37 +1,62 @@
-<html>
-	<?php
-		include "../helpers/conn.php";
-		//$servername = "wwydh-mysql.cqqq2sesxkkq.us-east-1.rds.amazonaws.com";
-		//$username = "wwydh_a_team";
-		//$password = "nzqbzNU3drDhVsgHsP4f";
+<?php
+	include "../helpers/conn.php";
+	//$servername = "wwydh-mysql.cqqq2sesxkkq.us-east-1.rds.amazonaws.com";
+	//$username = "wwydh_a_team";
+	//$password = "nzqbzNU3drDhVsgHsP4f";
 
-		//$conn = new mysqli($servername, $username, $password, "wwydh");
-		$theQuery = "SELECT * FROM locations where `id`='{$_GET["id"]}'";
-		$result = $conn->query($theQuery);
-		$rowcount=mysqli_num_rows($result);
-		$row = @mysqli_fetch_array($result);
-		
-		echo "<head>";
-		echo "<title>{$row["building_address"]}</title>";
-		echo "<style>";
-			echo ".imgViewer {width: 100%; height: 25em; background-color: #fbffdf; background-repeat:repeat; background-position: center;}";
-			echo "td {padding: 1.5em;}";
-			echo "h1, h3 {text-align: center;}";
-		echo "</style>";
-		echo "</head>";
-		echo "<body>";
-		echo "<div class=\"imgViewer\" style=\"background-image:url(../helpers/location_images/{$row["image"]})\">";
-		echo "</div>";
-		echo "<h1>{$row["building_address"]}</h1>";
-		echo "<h3>Property Information</h3>";
-		echo "<p align=\"center\">";
-		echo "<table>";
-			echo "<tr><td><b>Block: </b>{$row["block"]}</td><td><b>Lot: </b>{$row["lot"]}</td><td><b>Zip Code: </b>{$row["zip_code"]}</td></tr>";
-			echo "<tr><td><b>City: </b>{$row["city"]}</td><td><b>Neighborhood: </b>{$row["neighborhood"]}</td><td><b>Police District: </b>{$row["police_district"]}</td></tr>";
-			echo "<tr><td><b>Council District: </b>{$row["council_district"]}</td><td><b>Longitude: </b>{$row["longitude"]}</td><td><b>Latitude: </b>{$row["latitude"]}</td></tr>";
-			echo "<tr><td><b>Owner: </b>{$row["owner"]}</td><td><b>Use: </b>{$row["use"]}</td><td><b>Mailing Address: </b>{$row["mailing_address"]}</td></tr>";
-		echo "</table>";
-		echo "</p>";
-		echo "</body>";
-	?>
+	//$conn = new mysqli($servername, $username, $password, "wwydh");
+	$theQuery = "SELECT * FROM locations where `id`='{$_GET["id"]}'";
+	$result = $conn->query($theQuery);
+	$rowcount=mysqli_num_rows($result);
+	$row = @mysqli_fetch_array($result);
+?>
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<link href="styles.css" type="text/css" rel="stylesheet" />
+		<title><?php echo $row["building_address"] ?></title>
+	</head>
+
+	<body>
+		<div class="imgViewer" style="background-image: url(../helpers/location_images/<?php echo $row["image"] ?>)";></div>
+   <div class="name"><?php echo ($row["building_address"]) ?></div>
+   <div class="info">
+	  <div>
+			   <p>General City Information</p>
+	  </div>
+	  <ul>
+			  <li><b>City: </b><?php echo $row["city"] ?></li>
+		  <li><b>Neighborhood: </b><?php echo $row["neighborhood"] ?></li>
+		  <li><b>Police District: </b><?php echo $row["police_district"] ?></li>
+	  </ul>
+	  <br>
+			<p>Specific Property Information</p>
+		<ul>
+		  <li> <b>Block: </b><?php echo $row["block"] ?></li>
+		  <li> <b>Lot: </b><?php echo $row["lot"] ?></li>
+		  <li> <b>Zip Code: </b><?php echo $row["zip_code"] ?></li>
+		</ul>
+		<br>
+		<p>Current Use Information</p>
+		<ul>
+		  <li><b>Owner: </b><?php echo $row["owner"] ?></li>
+		  <li><b>What It Is Being Used As: </b><?php echo $row["use"] ?></li>
+		  <li><b>Mailing Address: </b> <?php echo $row["mailing_address"] ?></li>
+		</ul>
+		<br>
+		<p>Other</p>
+		<ul>
+		  <li><b>Council District: </b><?php echo $row["council_district"] ?></li>
+		  <li><b>Longitude: </b><?php echo $row["longitude"] ?></li>
+		  <li><b>Latitude: </b><?php echo $row["latitude"] ?></li>
+		</ul>
+		<div>
+		  <br>
+		  <p>Description:</p>
+		  <p>This section includes a general description about this specific lot and </p>
+		  <p>will include details provided by the creator of this location's page. </p>
+		</div>
+	  </div>
+<body>
 </html>
