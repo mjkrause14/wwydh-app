@@ -35,7 +35,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
     else if ($data["projects contributed to"] > 0) $rank = "Contributor";
     else $rank = "Beginner";
 
-    $q = $conn->prepare("SELECT pl.title AS `plan title`, pl.*, l.*, i.* FROM plans pl LEFT JOIN locations l ON l.id = pl.location_id LEFT JOIN ideas i ON i.id = pl.idea_id WHERE pl.creator_id = $id");
+    $q = $conn->prepare("SELECT pl.title AS `plan title`, pl.id as `plan`, pl.*, l.*, l.image AS `location image`, i.*, i.image AS `idea image` FROM plans pl LEFT JOIN locations l ON l.id = pl.location_id LEFT JOIN ideas i ON i.id = pl.idea_id WHERE pl.creator_id = $id");
     $q->execute();
 
     $plans_query = $q->get_result();
@@ -151,10 +151,43 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                             </div>
                             <div class="image" style="background-image: url(../helpers/user_images/<?php echo $_SESSION["user"]["image"] ?>)"></div>
                             <div class="name_rank">
-                                <div id="name"><?php echo $_SESSION["user"]["first"]." ".$_SESSION["user"]["last"] ?></div>
+                                <div id="name">Welcome back, <?php echo $_SESSION["user"]["first"] ?>!</div>
                                 <div id="rank"><?php echo $rank ?></div>
                             </div>
                             <div style="clear: both;"></div>
+                        </div>
+                        <div id="overview-plans">
+                            <div class="sub-cat-title">Your Plans</div>
+                            <div class="content-shadow">
+                                <div class="plans">
+                                    <table class="ready">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Address</th>
+                                            <th>Category</th>
+                                            <th> </th>
+                                            <th> </th>
+                                        </tr>
+                                        <?php foreach ($plans_ready as $p) { ?>
+                                            <tr>
+                                                <td class=""><?php echo $p["title"]; ?></td>
+                                                <td class=""><?php echo $p["building_address"]." ".$p["city"].", MD ".$p["zip_code"]; ?></td>
+                                                <td class="color"><?php echo $idea_categories[$p["category"]]["title"] ?> </td>
+                                                <td>
+                                                    <div class="idea_image image" style="background-image: url(../helpers/idea_images/<?php echo $p["idea image"] ?>)">
+                                                    </div>
+                                                    <i class="fa fa-link"></i>
+                                                    <div class="location_image image" style="background-image: url(../helpers/location_images/<?php echo $p["location image"] ?>)">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="publish btn">Publish <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="manage" class="pane">
@@ -165,7 +198,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                                 <?php foreach ($plans_ready as $p) { ?>
                                     <div class="plan content-shadow">
                                         <div class="plan-inner">
-                                            <div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $p["image"] ?>)">
+                                            <div class="location_image" style="background-image: url(../helpers/idea_images/<?php echo $p["image"] ?>)">
                                                 <i class="fa <?php echo $idea_categories[$p['category']]['fa-icon'] ?>"></i>
                                             </div>
                                             <div class="plan_title"><?php echo $p["plan title"] ?></div>
@@ -177,7 +210,6 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <div style="clear: both"></div>
                             </div>
                         </div>
                         <?php } ?>
@@ -197,7 +229,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                         </li>
                         <li data-target="manage">
                             <i class="fa fa-wrench" aria-hidden="true"></i>
-                            Manage
+                            Your plans
                             <?php if (count($plans_ready) > 0) { ?>
                                 <div class="sidebar_badge"><?php echo count($plans_ready) ?></div>
                             <?php } ?>

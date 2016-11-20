@@ -1,9 +1,12 @@
 var paddingOffset = 60;
 var plan = false;
+var planCount = 1;
 
 jQuery(document).ready(function($) {
 
     if (plan) $("#new-plan").addClass("open");
+
+    $(".plan-wrapper").width()
 
     $("#sidebar li").on("click", function() {
         $(".pane, #sidebar li").removeClass("active");
