@@ -1,7 +1,7 @@
 <?php
 
     // dont change any of the numbers! Stored in database by key reference only! The order doesn't matter!
-    $location_categories = [
+    $idea_categories = [
         "0" => [
             "title" => "other",
             "fa-icon" => "fa-ellipsis-h",

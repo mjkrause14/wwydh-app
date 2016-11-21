@@ -128,13 +128,13 @@
 							</div>
 						</div>
 						<div class="idea_image_wrapper">
-							<i class="fa <?php echo $location_categories[$row['category']]['fa-icon'] ?>"></i>
+							<i class="fa <?php echo $idea_categories[$row['category']]['fa-icon'] ?>"></i>
 							<div class="overlay"></div>
-							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $location_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
+							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $idea_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
 						</div>
 						<div class="idea_desc">
 							<div class="title"><?php echo $row["title"] ?></div>
-							<div class="category"><?php echo $location_categories[$row['category']]["title"] ?></div>
+							<div class="category"><?php echo $idea_categories[$row['category']]["title"] ?></div>
 							<div class="description"><?php echo $row["description"] ?></div>
 							<?php /* ?>
 							<?php if (count($row["checklist"]) > 0) { ?>

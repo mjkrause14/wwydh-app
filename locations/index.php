@@ -35,6 +35,7 @@
 		<link href="../helpers/splash.css" type="text/css" rel="stylesheet" />
 		<link href="styles.css" type="text/css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script src="https://use.fontawesome.com/42543b711d.js"></script>
 		<script src="../helpers/globals.js" type="text/javascript"></script>
 	</head>
 	<body>
@@ -90,8 +91,34 @@
 					<input name="search" type="text" placeholder="Enter an address, city, zipcode, or feature" />
 				</form>
 			</div>
+			<div class="new-of-type">
+				New Location
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</div>
 		</div>
 		<div class="grid-inner width">
+			<div id="toolbar">
+				<div id="item-count">
+					Showing <span><?php echo $offset + 1 ?></span> -
+					<span><?php echo ($total - $offset > $itemCount) ? $itemCount : $total ?></span> of <?php echo $total ?>
+				</div>
+				<div id="sort">
+					<span>Sort by</span>
+					<select>
+						<option value="default" selected>Upvotes: High to Low</option>
+						<option value="upvotes-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "upvotes-asc") echo "selected" ?>
+						>Upvotes: Low to High</option>
+						<option value="date-desc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-desc") echo "selected" ?>
+						>Date: Newest to Oldest</option>
+						<option value="date-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-asc") echo "selected" ?>
+						>Date: Oldest to Newest</option>
+					</select>
+				</div>
+				<div style="clear: both"></div>
+			</div>
 			<?php
 			while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
 				if (isset($row["features"])) $row["features"] = implode(" | ", explode("[-]", $row["features"])); ?>

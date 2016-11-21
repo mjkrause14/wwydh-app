@@ -35,7 +35,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
     else if ($data["projects contributed to"] > 0) $rank = "Contributor";
     else $rank = "Beginner";
 
-    $q = $conn->prepare("SELECT pl.title AS `plan title`, pl.*, l.*, i.* FROM plans pl LEFT JOIN locations l ON l.id = pl.location_id LEFT JOIN ideas i ON i.id = pl.idea_id WHERE pl.creator_id = $id");
+    $q = $conn->prepare("SELECT pl.title AS `plan title`, pl.id as `plan`, pl.*, l.*, l.image AS `location image`, i.*, i.image AS `idea image` FROM plans pl LEFT JOIN locations l ON l.id = pl.location_id LEFT JOIN ideas i ON i.id = pl.idea_id WHERE pl.creator_id = $id");
     $q->execute();
 
     $plans_query = $q->get_result();
@@ -151,32 +151,145 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                             </div>
                             <div class="image" style="background-image: url(../helpers/user_images/<?php echo $_SESSION["user"]["image"] ?>)"></div>
                             <div class="name_rank">
-                                <div id="name"><?php echo $_SESSION["user"]["first"]." ".$_SESSION["user"]["last"] ?></div>
+                                <div id="name">Welcome back, <?php echo $_SESSION["user"]["first"] ?>!</div>
                                 <div id="rank"><?php echo $rank ?></div>
                             </div>
                             <div style="clear: both;"></div>
                         </div>
+                        <div id="overview-plans">
+                            <div class="sub-cat-title">Your Plans
+                                <div id="plan-categories">
+                                    <select>
+                                        <option selected value="ready">Ready for publishing</option>
+                                        <option value="incomplete">Incomplete</option>
+                                        <option value="published">Published</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="content-shadow">
+                                <div class="plans">
+                                    <div class="plan-table ready active <?php if (count($plans_ready) == 0) echo "empty" ?>">
+                                        <table>
+                                            <div class="empty-table">
+                                                You don't have any plans in this category!
+                                                <div class="btn new-plan">Make a plan</div>
+                                            </div>
+                                            <tr>
+                                                <th> </th>
+                                                <th>Title</th>
+                                                <th>Address</th>
+                                                <th>Category</th>
+                                                <th> </th>
+                                                <th> </th>
+                                            </tr>
+                                            <?php foreach ($plans_ready as $c => $p) { ?>
+                                                <tr class="plan" data-plan="<?php echo $p["plan"] ?>">
+                                                    <td class="row-count"><div><?php echo $c + 1 ?></div></td>
+                                                    <td class="em"><?php echo $p["plan title"]; ?></td>
+                                                    <td><?php echo $p["building_address"]." ".$p["city"].", MD ".$p["zip_code"]; ?></td>
+                                                    <td><?php echo $idea_categories[$p["category"]]["title"] ?> </td>
+                                                    <td>
+                                                        <div class="idea_image image" style="background-image: url(../helpers/idea_images/<?php echo $p["idea image"] ?>)">
+                                                        </div>
+                                                        <i class="fa fa-link"></i>
+                                                        <div class="location_image image" style="background-image: url(../helpers/location_images/<?php echo $p["location image"] ?>)">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="publish btn">Publish <i class="fa fa-check" aria-hidden="true"></i></div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </table>
+                                    </div>
+                                    <div class="plan-table incomplete <?php if (count($plans_not_ready) == 0) echo "empty" ?>">
+                                        <table>
+                                            <div class="empty-table">
+                                                You don't have any plans in this category!
+                                                <div class="btn new-plan">Make a plan</div>
+                                            </div>
+                                            <tr>
+                                                <th> </th>
+                                                <th>Title</th>
+                                                <th>Address</th>
+                                                <th>Category</th>
+                                                <th> </th>
+                                            </tr>
+                                            <?php foreach ($plans_not_ready as $c => $p) { ?>
+                                                <tr class="plan" data-plan="<?php echo $p["plan"] ?>">
+                                                    <td class="row-count"><div><?php echo $c + 1 ?></div></td>
+                                                    <td class="em"><?php echo $p["plan title"]; ?></td>
+                                                    <td><?php echo $p["building_address"]." ".$p["city"].", MD ".$p["zip_code"]; ?></td>
+                                                    <td><?php echo $idea_categories[$p["category"]]["title"] ?> </td>
+                                                    <td>
+                                                        <div class="idea_image image" style="background-image: url(../helpers/idea_images/<?php echo $p["idea image"] ?>)">
+                                                        </div>
+                                                        <i class="fa fa-link"></i>
+                                                        <div class="location_image image" style="background-image: url(../helpers/location_images/<?php echo $p["location image"] ?>)">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </table>
+                                    </div>
+                                    <div class="plan-table published <?php if (count($plans_published) == 0) echo "empty" ?>">
+                                        <table>
+                                            <div class="empty-table">
+                                                You don't have any plans in this category!
+                                                <div class="btn new-plan">Publish a plan</div>
+                                            </div>
+                                            <tr>
+                                                <th> </th>
+                                                <th>Title</th>
+                                                <th>Address</th>
+                                                <th>Category</th>
+                                                <th> </th>
+                                                <th> </th>
+                                            </tr>
+                                            <?php foreach ($plans_published as $c => $p) { ?>
+                                                <tr class="plan" data-plan="<?php echo $p["plan"] ?>">
+                                                    <td class="row-count"><div><?php echo $c + 1 ?></div></td>
+                                                    <td class="em"><?php echo $p["plan title"]; ?></td>
+                                                    <td><?php echo $p["building_address"]." ".$p["city"].", MD ".$p["zip_code"]; ?></td>
+                                                    <td><?php echo $idea_categories[$p["category"]]["title"] ?> </td>
+                                                    <td>
+                                                        <div class="idea_image image" style="background-image: url(../helpers/idea_images/<?php echo $p["idea image"] ?>)">
+                                                        </div>
+                                                        <i class="fa fa-link"></i>
+                                                        <div class="location_image image" style="background-image: url(../helpers/location_images/<?php echo $p["location image"] ?>)">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="unpublish btn">Unpublish <i class="fa fa-times" aria-hidden="true"></i></div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="manage" class="pane">
                         <?php if (count($plans_ready) > 0) { ?>
-                        <div id="plans-ready" class="manage-plans content-shadow">
-                            <div class="sub-cat-title">Plans ready for publishing</div>
+                        <div class="sub-cat-title">Plans ready for publishing</div>
+                        <div id="plans-ready" class="manage-plans">
                             <div class="plans">
                                 <?php foreach ($plans_ready as $p) { ?>
-                                    <div class="plan">
+                                    <div class="plan content-shadow">
                                         <div class="plan-inner">
-                                            <div class="location_image" style="background-image: url(../helpers/location_images/<?php echo $p["image"] ?>)">
-                                                <i class="fa <?php echo $location_categories[$p['category']]['fa-icon'] ?>"></i>
+                                            <div class="location_image" style="background-image: url(../helpers/idea_images/<?php echo $p["image"] ?>)">
+                                                <i class="fa <?php echo $idea_categories[$p['category']]['fa-icon'] ?>"></i>
                                             </div>
                                             <div class="plan_title"><?php echo $p["plan title"] ?></div>
                                             <div class="idea_information">
                                                 <div class="location_address"><?php echo $p["building_address"]." ".$p["city"].", Maryland ".$p["zip_code"] ?></div>
                                                 <div class="idea_desc"><?php echo $p["description"] ?></div>
                                             </div>
+                                            <div style="clear: both;"></div>
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <div style="clear: both"></div>
                             </div>
                         </div>
                         <?php } ?>
@@ -196,7 +309,7 @@ AS `projects contributed to`, (SELECT COUNT(p.id) AS count FROM projects p INNER
                         </li>
                         <li data-target="manage">
                             <i class="fa fa-wrench" aria-hidden="true"></i>
-                            Manage
+                            Your plans
                             <?php if (count($plans_ready) > 0) { ?>
                                 <div class="sidebar_badge"><?php echo count($plans_ready) ?></div>
                             <?php } ?>

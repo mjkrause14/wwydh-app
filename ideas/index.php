@@ -18,23 +18,40 @@
 
 	$id = isset($_SESSION["user"]["id"]) ? $_SESSION["user"]["id"] : 0;
 
+	// set the $_GET variables to appended to links that reload this page
+	$urlExtras = "?";
+	if (isset($_GET["page"])) $urlExtras += "page=".$_GET["page"]."&";
+	if (isset($_GET["sort"])) $urlExtras += "sort=".$_GET["sort"]."&";
+
 	// BACKEND:10 change locations search code to prepared statements to prevent SQL injection
 	if (isset($_GET["isSearch"])) {
 		$theQuery = "SELECT * FROM `locations` WHERE `building_address` LIKE '%{$_GET["sAddress"]}%' AND `building_address` LIKE '%{$_GET["sAddress"]}%' AND `block` LIKE '%{$_GET["sBlock"]}%' AND `lot` LIKE '%{$_GET["sLot"]}%' AND `zip_code` LIKE '%{$_GET["sZip"]}%' AND `city` LIKE '%{$_GET["sCity"]}%' AND `neighborhood` LIKE '%{$_GET["sNeighborhood"]}%' AND `police_district` LIKE '%{$_GET["sPoliceDistrict"]}%' AND `council_district` LIKE '%{$_GET["sCouncilDistrict"]}%' AND `longitude` LIKE '%{$_GET["sLongitude"]}%' AND `latitude` LIKE '%{$_GET["sLatitude"]}%' AND `owner` LIKE '%{$_GET["sOwner"]}%' AND `use` LIKE '%{$_GET["sUse"]}%' AND `mailing_address` LIKE '%{$_GET["sMailingAddr"]}%'";
-	} else if (isset($_GET["location"])) {
-		$q = $conn->prepare("SELECT u.name AS `name`, i.*, GROUP_CONCAT(cc.description SEPARATOR '[-]') as `checklist`, l.mailing_address, l.image FROM ideas i LEFT JOIN users u ON u.id = i.leader_id
-		LEFT JOIN locations l ON i.location_id = l.id
-		LEFT JOIN checklists c ON c.idea_id = i.id
-		LEFT JOIN checklist_items cc ON cc.checklist_id = c.id
-		WHERE cc.contributer_id IS NULL AND i.location_id = {$_GET["location"]} GROUP BY i.id");
 	} else {
-		$q = $conn->prepare("SELECT i.*, COUNT(up_i.id) AS `upvotes`, COUNT(down_i.id) AS `downvotes`, (COUNT(up_i.id) - COUNT(down_i.id)) AS `vote coef`, COUNT(up_i_u.id) AS `upvoted`, COUNT(down_i_u.id) AS `downvoted` FROM ideas i LEFT JOIN
-		upvotes_ideas up_i ON up_i.idea_id = i.id LEFT JOIN downvotes_ideas down_i ON down_i.idea_id = i.id LEFT JOIN upvotes_ideas
-		up_i_u ON up_i_u.user_id = $id AND up_i_u.idea_id = i.id LEFT JOIN downvotes_ideas down_i_u ON down_i_u.user_id = $id AND down_i_u.idea_id = i.id GROUP BY i.id ORDER BY `vote coef` DESC LIMIT $itemCount OFFSET $offset");
+		if (isset($_GET["sort"]) && $_GET["sort"] == "upvotes-asc") $sort = "`upvotes` ASC";
+		elseif (isset($_GET["sort"]) && $_GET["sort"] == "date-desc") $sort = "`timestamp` DESC";
+		elseif (isset($_GET["sort"]) && $_GET["sort"] == "date-asc") $sort = "`timestamp` ASC";
+		// dafault case
+		else $sort = "`upvotes` DESC";
+
+		$q = $conn->prepare("SELECT i.*,
+			(SELECT COUNT(up_i.id) FROM upvotes_ideas up_i WHERE up_i.idea_id = i.id) AS `upvotes`,
+			(SELECT COUNT(up_i_u.id) FROM upvotes_ideas up_i_u WHERE up_i_u.user_id = $id AND up_i_u.idea_id = i.id) AS `upvoted`,
+			COUNT(pl.id) AS `plans` FROM ideas i LEFT JOIN plans pl ON pl.idea_id = i.id GROUP BY i.id ORDER BY $sort LIMIT $itemCount OFFSET $offset");
 	}
 
 	$q->execute();
 	$data = $q->get_result();
+
+	// if user is logged in, get users plans and identify whether or not they have an idea attached to them
+	if (isset($_SESSION["user"])) {
+		$q = $conn->prepare("SELECT pl.*, IF(COUNT(i.id) > 0, 'true', 'false') AS `has idea` FROM plans pl LEFT JOIN ideas i ON pl.idea_id = i.id WHERE pl.creator_id = {$_SESSION["user"]["id"]} AND pl.published = 0 GROUP BY pl.id");
+		$q->execute();
+
+		$users_plans = $q->get_result();
+		$plans = [];
+
+		while ($row = $users_plans->fetch_array(MYSQLI_ASSOC)) array_push($plans, $row);
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -48,9 +65,28 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="../helpers/globals.js" type="text/javascript"></script>
 		<script src="scripts.js" type="text/javascript"></script>
+
+		<?php if (isset($_SESSION["message"])) { ?>
+			<script type="text/javascript">
+				setTimeout(function() {
+					$(".notification").addClass("visible");
+
+					setTimeout(function() {
+						$(".notification").removeClass("visible");
+					}, 4000);
+				}, 600);
+			</script>
+		<?php } ?>
 	</head>
 	<body>
 		<div class="width">
+			<?php if (isset($_SESSION["message"])) { ?>
+				<div class="notification <?php echo $_SESSION["message"][0] ?>">
+					<span><?php echo $_SESSION["message"][1] ?></span>
+				</div>
+				<?php
+				unset($_SESSION["message"]);
+			} ?>
 			<div id="nav">
 	            <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?>">
 	                <a href="../home">
@@ -102,20 +138,71 @@
 					<input name="search" type="text" placeholder="Enter a category or search keywords" />
 				</form>
 			</div>
+			<div class="new-of-type">
+				New Idea
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</div>
 		</div>
 		<div class="grid-inner width">
+			<div id="toolbar">
+				<div id="item-count">
+					Showing <span><?php echo $offset + 1 ?></span> -
+					<span><?php echo ($total - $offset > $itemCount) ? $itemCount : $total ?></span> of <?php echo $total ?>
+				</div>
+				<div id="sort">
+					<span>Sort by</span>
+					<select>
+						<option value="default" selected>Upvotes: High to Low</option>
+						<option value="upvotes-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "upvotes-asc") echo "selected" ?>
+						>Upvotes: Low to High</option>
+						<option value="date-desc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-desc") echo "selected" ?>
+						>Date: Newest to Oldest</option>
+						<option value="date-asc"
+							<?php if (isset($_GET["sort"]) && $_GET["sort"] == "date-asc") echo "selected" ?>
+						>Date: Oldest to Newest</option>
+					</select>
+				</div>
+				<div style="clear: both"></div>
+			</div>
 			<?php
 			while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
 				if (isset($row["checklist"])) $row["checklist"] = explode("[-]", $row["checklist"]); ?>
 
 				<div class="idea
-				<?php if (isset($row["owner"])) echo "mine" ?>"
+				<?php if (isset($row["owner"]) && $row["owner"] == $_SESSION["user"]["id"]) echo "mine" ?>"
 				data-idea="<?php echo $row["id"] ?>">
 					<div class="grid-item width">
+						<div class="plan-buttons options btn-group">
+							<div class="btn op-1"><a>Add to plan <i class="fa fa-sort" aria-hidden="true"></i></a></div>
+							<?php if ($row["plans"] > 0) { ?> <div class="btn op-2"><a href="../plans?location=<?php echo $row["id"] ?>">See other plans with this idea</a></div> <?php } ?>
+						</div>
+						<div class="add-to-plan">
+							<ul>
+								<li class="create">
+									<i class="fa fa-plus" aria-hidden="true"></i>
+									<span>Create new plan</span>
+									<div class="plan-title">
+										<form>
+											<input name="plan-title" type="text" placeholder="Plan Title" />
+											<input type="submit" value="Go!" />
+										</form>
+									</div>
+								</li>
+								<?php if (isset($plans)) {
+									 foreach ($plans as $p)  { ?>
+										<?php if ($p["has idea"] == "false") { ?>
+											<li class="existing" data-plan="<?php echo $p["id"] ?>"><?php echo $p["title"] ?></li>
+										<?php } ?>
+								<?php }
+								} ?>
+							</ul>
+						</div>
 						<div class="vote">
 							<div class="upvote <?php if ($row["upvoted"] == 1) echo "me"; ?>">
-								<div class="vote_count"><?php echo $row["upvotes"] ?></div>
 								<i class="fa fa-thumbs-up" aria-hidden="true"></i>
+								<div class="vote_count"><?php echo $row["upvotes"] ?></div>
 							</div>
 							<div class="downvote <?php if ($row["downvoted"] == 1) echo "me"; ?>">
 								<i class="fa fa-thumbs-down" aria-hidden="true"></i>
@@ -124,13 +211,17 @@
 							<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
 						</div>
 						<div class="idea_image_wrapper">
-							<i class="fa <?php echo $location_categories[$row['category']]['fa-icon'] ?>"></i>
+							<?php if (isset($row["owner"]) && isset($_SESSION["user"]) && $row["owner"] == $_SESSION["user"]["id"]) { ?>
+								<div class="corner-ribbon idea-mine">mine</div>
+							<?php } ?>
+							<i class="fa <?php echo $idea_categories[$row['category']]['fa-icon'] ?>"></i>
 							<div class="overlay"></div>
-							<div class="idea_image" style="background-image: url(../helpers/category_images/<?php if (isset($row['category'])) echo $location_categories[$row['category']]['image']; else echo "no_image.jpg";?>);"></div>
+							<div class="idea_image" style="background-image: url(../helpers/idea_images/<?php if (isset($row['image'])) echo $row['image']; else echo "no_image.jpg";?>);"></div>
 						</div>
 						<div class="idea_desc">
 							<div class="title"><?php echo $row["title"] ?></div>
-							<div class="category"><?php echo $location_categories[$row['category']]["title"] ?></div>
+							<div class="post_date">Posted on:  <span><?php echo date("F j, Y", strtotime($row["timestamp"])) ?></span></div>
+							<div class="category">Category: <span><?php echo $idea_categories[$row['category']]["title"] ?></span></div>
 							<div class="description"><?php echo $row["description"] ?></div>
 							<?php /* ?>
 							<?php if (count($row["checklist"]) > 0) { ?>
@@ -157,12 +248,16 @@
 			<div class="grid-inner">
 				<ul>
 				<?php
+					// appends other $_GET variables to the url before following it
+					$urlExtras = "?";
+					if (isset($_GET["sort"])) $urlExtras .= "sort=".$_GET["sort"]."&";
+
 					$starting_page = ($page - 5 > 0) ? $page - 5 : 1;
 					$ending_page = ($page + 5 < ceil($total / $itemCount)) ? $page + 5 : ceil($total / $itemCount);
 
 					for ($i = 0; $i <= 10 && $starting_page + $i <= $ending_page; $i++) { ?>
 						<li><a <?php echo ($page == $starting_page + $i) ? 'class="active"' : "" ?>
-							href="?page=<?php echo $starting_page + $i ?>"><?php echo $starting_page + $i ?></a>
+							href="<?php echo $urlExtras ?>page=<?php echo $starting_page + $i ?>"><?php echo $starting_page + $i ?></a>
 						</li>
 				<?php } ?>
 				</ul>
