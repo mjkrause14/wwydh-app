@@ -255,34 +255,41 @@
     padding: 15px 20px;
 }
 
+#content #overview-plans #plan-categories {
+    float: right;
+}
+
+#content #overview-plans .plan-table {
+    display: none;
+}
+
+#content #overview-plans .plan-table.active {
+    display: block;
+}
+
 #content #overview-plans table {
     width: 100%;
     font-size: 14px;
+    border-collapse: collapse;
 }
 
 #content #overview-plans table th {
-    text-transform: uppcercase;
     color: rgba(0, 0, 0, 0.4);
     font-weight: normal;
     text-align: left;
-}
-
-#content #overview-plans table tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 7px;
 }
 
 
 #content #overview-plans table td {
     padding: 7px 0px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     text-transform: uppercase;
 }
 
-.info {
-    display: table-row;
-}
-
-#content #overview-plans table td.color {
+#content #overview-plans table td.em {
+    font-weight: 600;
     color: #418040;
 }
 
@@ -299,6 +306,11 @@
     float: left;
 }
 
+#content #overview-plans td.row-count div {
+    padding: 0px 10px;
+    color: rgba(0, 0, 0, 0.4);
+}
+
 #content #overview-plans td > i {
     color: #5C5C5C;
     float: left;
@@ -306,10 +318,9 @@
     padding: 10px;
 }
 
-#content #overview-plans td .publish {
+#content #overview-plans td .btn {
     padding: 8px 12px;
     color: white;
-    background: #418040;
     border-radius: 2px;
     text-align: center;
     position: relative;
@@ -317,10 +328,50 @@
     text-transform: none;
 }
 
-#content #overview-plans td .publish > i {
+#content #overview-plans td .btn.publish {
+    background: #418040;
+}
+
+#content #overview-plans td .btn.unpublish {
+    background: #AD0E16;
+}
+
+#content #overview-plans td .btn > i {
     margin-left: 10px;
     font-size: 20px;
-    display:none;
+    display: none;
+}
+
+#content #overview-plans .empty-table {
+    color: #5C5C5C;
+    text-align: center;
+    display: none;
+}
+
+#content #overview-plans .empty tr {
+    display: none;
+}
+
+#content #overview-plans .active.empty .empty-table {
+    display: block;
+}
+
+#content #overview-plans .empty-table .btn {
+    background: #418040;
+    padding: 8px 12px;
+    color: white;
+    border-radius: 2px;
+    max-width: 200px;
+    margin: 10px auto auto;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 2px solid #418040;
+    text-transform: uppercase;
+}
+
+#content #overview-plans .empty-table .btn:hover {
+    color: #418040;
+    background: white;
 }
 
 .sub-cat-title {

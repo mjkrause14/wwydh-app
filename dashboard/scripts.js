@@ -12,6 +12,11 @@ jQuery(document).ready(function($) {
         $(".pane, #sidebar li").removeClass("active");
         $("#" + $(this).data("target")).addClass("active");
         $(this).addClass("active");
+    });
+
+    $("#overview-plans #plan-categories select").on("input", function() {
+        $(".plan-table").removeClass("active");
+        $(".plan-table." + $(this).val()).addClass("active");
     })
 
     $("#create-plan").on("click", function() {
