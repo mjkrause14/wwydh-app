@@ -5,7 +5,8 @@
     include "../helpers/conn.php";
 
     // BACKEND:0 change homepage location query to ORDER BY RAND() LIMIT 3
-    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT i.id) AS ideas, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN ideas i ON i.location_id = l.id LEFT JOIN location_features f ON f.location_id = l.id WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY ideas DESC, RAND() LIMIT 4");
+    $q = $conn->prepare("SELECT l.*, COUNT(DISTINCT p.id) AS plans, GROUP_CONCAT(DISTINCT f.feature SEPARATOR '[-]') AS features FROM locations l LEFT JOIN plans p ON p.location_id = l.id AND p.published = 1 LEFT JOIN location_features f ON f.location_id = l.id
+    WHERE l.id < 37 OR l.id = 3 GROUP BY l.id ORDER BY plans DESC, RAND() LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
@@ -16,14 +17,14 @@
         array_push($locations, $row);
     }
 
-    $q = $conn->prepare("SELECT p.*, u.name AS leader, l.mailing_address AS address, l.image AS image FROM projects p LEFT JOIN users u ON p.leader_id = u.id LEFT JOIN ideas i ON p.idea_id = i.id LEFT JOIN locations l ON i.location_id = l.id");
+    $q = $conn->prepare("SELECT i.*, count(up.id) as `upvotes` FROM ideas i LEFT JOIN upvotes_ideas up ON up.idea_id = i.id GROUP BY i.id ORDER BY `upvotes` DESC LIMIT 4");
     $q->execute();
 
     $data = $q->get_result();
-    $projects = [];
+    $ideas = [];
 
     while ($row = $data->fetch_array(MYSQLI_ASSOC)) {
-        array_push($projects, $row);
+        array_push($ideas, $row);
     }
 ?>
 <!DOCTYPE html>
@@ -35,116 +36,74 @@
         <link href="styles.css" type="text/css" rel="stylesheet" />
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzAMBl8WEWkqExNw16kEk40gCOonhMUmw" async defer></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://use.fontawesome.com/42543b711d.js"></script>
+        <script src="../helpers/globals.js" type="text/javascript"></script>
+
         <script type="text/javascript">
             // convert location data from php to javascript using JSON
             var locations = jQuery.parseJSON('<?php echo str_replace("'", "\'", json_encode($locations)) ?>');
-
-            function initMap() {
-                // Create a map object and specify the DOM element for display.
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    animation: google.maps.Animation.DROP,
-                    center: {lat: parseFloat(locations[0].latitude), lng: parseFloat(locations[0].longitude)},
-                    scrollwheel: false,
-                    zoom: 14
-                });
-
-                $(locations).each(function() {
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        position: {lat: parseFloat(this.latitude), lng: parseFloat(this.longitude)},
-                        address: this.mailing_address
-                    });
-
-                    marker.addListener("click", function() {
-                        alert(this.address); // FRONTEND:10 change the map marker click listener to trigger location popup
-                    })
-                })
-            }
-
         </script>
 
-        <!-- scroll on click to how it works -->
-        <script type="text/javascript">
-            jQuery(document).ready(function($) {
-                $("#see-how").click(function() {
-                    $("html, body").animate({scrollTop: $("#how").offset().top}, 650);
-                })
-            });
-          </script>
-
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $("li.tablink").click(function() {
-                    if (!$(this).hasClass("active")) {
-                        // handle nav change
-                        $("li.tablink").removeClass("active");
-                        $(this).addClass("active");
-
-                        // handle content change
-                        $(".tabcontent").removeClass("active");
-                        $(".tabcontent[data-tab=" + $(this).data("target") + "]").addClass("active");
-                    }
-                })
-            })
-       </script>
-
-       <script>
-       function openNav() {
-           document.getElementById("mySidenav").style.width = "250px";
-       }
-
-       function closeNav() {
-           document.getElementById("mySidenav").style.width = "0";
-       }
-       </script>
-
+        <script src="scripts.js" type="text/javascript"></script>
     </head>
     <body onload="initMap(); openNav();">
-
-        <?php
-            // FRONTEND: remove this garbage style tag and externalize this stylesheet. This is just so I could see what I was doing
-        ?>
-        <div id="mySidenav" class="sidenav">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">Close &times;</a>
-          <div id="sideIdea">I Have an Idea</div>
-          <div id="sideLocation">I Have a Location</div>
-          <div id="sideHelp">I Want to Help</div>
-          <div id="sideContact">Contact Us</div>
-        </div>
-        <div id="sideOpen">
-          <span style="font-size:30px;cursor:pointer;color: #939393" onclick="openNav()">&#9776; Menu</span>
-        </div>
-    </head>
-    <body>
-
         <div id="nav">
-            <div class="nav-inner width">
+            <div class="nav-inner width clearfix <?php if (isset($_SESSION['user'])) echo 'loggedin' ?> ">
                 <a href="../home">
                     <div id="logo"></div>
                     <div id="logo_name">What Would You Do Here?</div>
+                    <div class="spacer"></div>
+                </a>
                 <div id="user_nav" class="nav">
-                    <ul>
-                        <a href="#"><li>Log in</li></a>
-                        <a href="#"><li>Sign up</li></a>
-                    </ul>
+                    <?php if (!isset($_SESSION["user"])) { ?>
+                        <ul>
+                            <a href="../login"><li>Log in</li></a>
+                            <a href="#"><li>Sign up</li></a>
+                            <a href="../contact"><li>Contact</li></a>
+                        </ul>
+                    <?php } else { ?>
+                        <div class="loggedin">
+                            <span class="click-space">
+                                <span class="chevron"><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                                <div class="image" style="background-image: url(../helpers/user_images/<?php echo $_SESSION["user"]["image"] ?>);"></div>
+                                <span class="greet">Hi <?php echo $_SESSION["user"]["first"] ?>!</span>
+                            </span>
+
+                            <div id="nav_submenu">
+                                <ul>
+                                    <a href="../dashboard"><li>Dashboard</li></a>
+                                    <a href="../profile"><li>My Profile</li></a>
+                                    <a href="../helpers/logout.php?go=home"><li>Log out</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
                 <div id="main_nav" class="nav">
                     <ul>
                         <a href="../locations"><li>Locations</li></a>
                         <a href="../ideas"><li>Ideas</li></a>
+                        <a href="../plans"><li>Plans</li></a>
                         <a href="../projects"><li>Projects</li></a>
-                        <a href="../contact"><li>Contact</li></a>
                     </ul>
                 </div>
             </div>
         </div>
         <div id="mapContainer">
-            <div id="map">
+            <div id="mySidenav" class="sidenav">
+                <div class="sidebar-tools">
+
+                </div>
+                <a href="../ideas/new"><div id="sideIdea" class="side-button">I Have an Idea</div></a>
+                <a href="../locations/new"><div id="sideLocation" class="side-button">I Have a Location</div></a>
+                <div id="sideHelp" class="side-button">I Want to Contribute</div>
+                <a href="../contact"><div id="sideContact" class="side-button">Contact Us</div></a>
             </div>
+            <div id="map"></div>
             <div id="welcome">
                 <div class="width">
                     <span id="see-how"><h1>See How it Works!</h1></span>
-                    <div id="locationButton">Submit Location</div>
+                    <!-- <div id="locationButton">Submit Location</div> -->
                 </div>
             </div>
         </div>
@@ -159,14 +118,14 @@
                     <?php
                     foreach($locations as $l) { ?>
                         <div class="location">
-                            <div class="btn-group">
-                                <div class="btn newidea"><a href="../newidea?location=<?php echo $l["id"] ?>">I have an idea</a></div>
-                                <?php if ($l["ideas"] > 0) { ?> <div class="btn seeideas"><a href="../ideas?location=<?php echo $l["id"] ?>">See other ideas here</a></div> <?php } ?>
-                                <div class="btn seelocation"><a href="../locations/propertyInfo.php?id=<?php echo $l["id"] ?>">View full location</a></div>
+                            <div class="options btn-group">
+                                <div class="btn op-1"><a href="../dashboard?newplan&location=<?php echo $l["id"] ?>">Make a Plan Here</a></div>
+                                <?php if ($l["plans"] > 0) { ?> <div class="btn op-2"><a href="../plans?location=<?php echo $l["id"] ?>">See other Plans here</a></div> <?php } ?>
+                                <div class="btn op-3"><a href="../locations/propertyInfo.php?id=<?php echo $l["id"] ?>">View full location</a></div>
                             </div>
                             <div class="location_image" style="background-image: url(../helpers/location_images/<?php if (isset($l['image'])) echo $l['image']; else echo "no_image.jpg";?>);">
-                                <?php if ($l["ideas"] > 0) { ?>
-                                    <div class="ideas_count"><?php echo $l["ideas"] ?></div>
+                                <?php if ($l["plans"] > 0) { ?>
+                                    <div class="ideas_count"><?php echo $l["plans"] ?></div>
                                 <?php } ?>
                             </div>
                             <div class="location_desc">
@@ -187,15 +146,38 @@
                     ?>
                 </div>
                 <div id="projects" class="tabcontent" data-tab="2">
-                    <?php
-                    foreach ($projects as $p) { ?>
-                        <div class="project">
-                            <div class="project_image" style="background-image: url(../helpers/location_images/<?php if (isset($p['image'])) echo $p['image']; else echo "no_image.png";?>);"></div>
-                            <div class="project_leader"><?php echo $p["leader"] ?></div>
-                            <div class="address"><?php echo $p["address"] ?></div>
-                            <div class="project_status">Status: <?php echo $p["completed"] == 0 ? "unfinished" : "finished" ?></div>
-                        </div>
-                    <?php } ?>
+                    <!-- <div id="ideas" class="tabcontent active" data-tab="2"> -->
+                   <?php
+                   foreach($ideas as $i) { ?>
+                       <div class="idea">
+                           <div class="btn-group">
+                               <div class="btn newidea"><a href="../newidea?location=<?php echo $l["id"] ?>">I have a similar idea</a></div>
+                               <?php if ($i["ideas"] > 0) { ?> <div class="btn seeideas"><a href="../ideas?location=<?php echo $i["id"] ?>">See other ideas nearby</a></div> <?php } ?>
+                               <div class="btn seelocation"><a href="../locations/propertyInfo.php?id=<?php echo $i["id"] ?>">View full location</a></div>
+                           </div>
+                           <div class="idea_image" style="background-image: url(../helpers/location_images/<?php if (isset($i['image'])) echo $i['image']; else echo "no_image.jpg";?>);">
+                               <?php if ($l["ideas"] > 0) { ?>
+                                   <div class="ideas_count"><?php echo $i["ideas"] ?></div>
+                               <?php } ?>
+                           </div>
+                           <div class="idea_desc">
+                               <div class="idea_leader"><?php echo $i["leader"] ?></div>
+                               <div class="address"><?php echo $i["address"] ?></div>
+                  <div class="idea_status">Status: <?php echo $i["completed"] == 0 ? "unfinished" : "finished" ?></div>
+                               <?php if (isset($i["features"])) { ?>
+                                   <div class="features">
+                                       <span>Features:</span>
+                                           <ul>
+                                               <?php foreach ($i["features"] as $f) { ?>
+                                                   <li><?php echo $f ?></li>
+                                               <?php } ?>
+                                           </ul>
+                                   </div>
+                               <?php } ?>
+                           </div>
+                       </div>
+                   <?php }
+                   ?>
                 </div>
             </div>
         </div>
